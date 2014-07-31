@@ -79,8 +79,7 @@ body {
 }
 
 
-.order-table-container {
-  padding: 0 21px 0 0;
+.order-table-container {  
   h3 {
     margin:0;
     text-align: center;
@@ -93,9 +92,21 @@ body {
   table {    
     width:100%;
     // margin:0 20px;
+  }  
+}
+
+.order-table-containers {
+  .order-table-container:first-child {
+    margin-right: 10px;
   }
 }
 
 .order-form {
-  width:650px;
+  width:100%;
+  margin:0 auto;
+
+  &.pure-form-aligned .pure-control-group label {
+    text-align: left;
+  }
 }
+

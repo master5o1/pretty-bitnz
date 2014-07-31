@@ -25,7 +25,7 @@ gulp.task('compile-js', function(){
 });
 
 gulp.task('compile-less', function(){
-	gulp.src(['bower_components/pure/pure-min.css', 'app/styles/*.less'])
+	gulp.src(['bower_components/pure/pure-min.css', 'app/styles/styles.less'])
 	.pipe(sourcemaps.init())
 	.pipe(less())
   	.pipe(sourcemaps.write())

@@ -39,24 +39,32 @@
 
 <!---- VIEWS -->
 <script id="settings.html" type="text/ng-template">
-<form ng-submit="Authorize()" class="pure-form pure-form-aligned">
-  <div class="pure-control-group">
-    <label for="settings-username">Username:</label>
-    <input type="text" id="settings-username" ng-model="username" placeholder="" />
-  </div>
-  <div class="pure-control-group">
-    <label for="settings-key">API Key:</label>
-    <input type="text" id="settings-key" ng-model="key" placeholder="" />
-  </div>
-  <div class="pure-control-group">
-    <label for="settings-secret">Secret:</label>
-    <input type="text" id="settings-secret" ng-model="secret" placeholder="" />
-  </div>
-  <div class="pure-controls">
-    <button type="submit" class="pure-button pure-button-primary">Authorize</button>
-  </div>
-  Authorized: {{ authorized }}
-</form>
+<div class="content">
+  <h2 class="content-subhead">Settings</h2>
+  <form ng-submit="Authorize()" class="pure-form pure-form-aligned">
+    <div class="pure-control-group">
+      <label for="settings-username">Username:</label>
+      <input type="text" id="settings-username" ng-model="username" placeholder="" />
+    </div>
+    <div class="pure-control-group">
+      <label for="settings-key">API Key:</label>
+      <input type="text" id="settings-key" ng-model="key" placeholder="" />
+    </div>
+    <div class="pure-control-group">
+      <label for="settings-secret">Secret:</label>
+      <input type="text" id="settings-secret" ng-model="secret" placeholder="" />
+    </div>
+    <div class="pure-controls">
+      <button type="submit" class="pure-button pure-button-primary">Authorize</button>
+    </div>
+    <div ng-show="authError">
+      Authorization error: {{ errorMessage }}
+    </div>
+    <div>
+      Authorized: {{ authorized }}
+    </div>
+  </form>
+</div>
 </script>
 <script id="main.html" type="text/ng-template">
   <div class="content" ng-if="last_price">

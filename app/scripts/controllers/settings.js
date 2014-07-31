@@ -8,6 +8,7 @@ angular.module('prettyBitnzApp')
     
     $scope.authorized = false;
     $scope.authError = false;
+    $scope.errorMessage = '';
 
     $scope.Authorize = function() {
       bitnz.authorize($scope.username, $scope.key, $scope.secret);
@@ -18,6 +19,7 @@ angular.module('prettyBitnzApp')
           $scope.authError = false;
         } else {
           $scope.authError = true;
+          $scope.errorMessage = data.message;
         }
       }).error(function(){
         $scope.authError = true;

@@ -19,34 +19,46 @@
 
         <div id="menu" ng-class=" side_bar_toggled ? 'active' : ''">
             <div class="pure-menu pure-menu-open">
-                <a class="pure-menu-heading" href="#">Company</a>
+                <a class="pure-menu-heading" href="#">Pretty BitNZ</a>
 
                 <ul>
                     <li><a href="#">Home</a></li>
-                    <li><a href="#">About</a></li>
-
-                    <li class="menu-item-divided pure-menu-selected">
-                        <a href="#">Services</a>
-                    </li>
-
-                    <li><a href="#">Contact</a></li>
+                    <li><a href="#settings">Settings</a></li>
                 </ul>
             </div>
         </div>      
 
     <div id="main">
+       <div class="header">
+        <h1>Pretty BitNZ</h1>
+        <h2>A nicer interface for our favourite New Zealand exchange</h2>
+      </div>
       <div ng-view=""></div>        
     </div>
 </div>
 
-<!---- VIEWS ---->
-
-<script id="main.html" type="text/ng-template">
-    <div class="header">
-      <h1>Pretty BitNZ</h1>
-      <h2>A nicer interface for our favourite New Zealand exchange</h2>
+<!---- VIEWS -->
+<script id="settings.html" type="text/ng-template">
+<form ng-submit="Authorize()" class="pure-form pure-form-aligned">
+  <div class="pure-control-group">
+    <label for="settings-username">Username:</label>
+    <input type="text" id="settings-username" ng-model="username" placeholder="" />
   </div>
-
+  <div class="pure-control-group">
+    <label for="settings-key">API Key:</label>
+    <input type="text" id="settings-key" ng-model="key" placeholder="" />
+  </div>
+  <div class="pure-control-group">
+    <label for="settings-secret">Secret:</label>
+    <input type="text" id="settings-secret" ng-model="secret" placeholder="" />
+  </div>
+  <div class="pure-controls">
+    <button type="submit" class="pure-button pure-button-primary">Authorize</button>
+  </div>
+  Authorized: {{ authorized }}
+</form>
+</script>
+<script id="main.html" type="text/ng-template">
   <div class="content" ng-if="last_price">
       <h2 class="content-subhead">
         Last Price: <strong>{{ last_price  | currency:'$' }}</strong> | 
@@ -161,6 +173,7 @@
       </p>
   </div>
 </script>
-        <script src="scripts/min/scripts.min.js"></script>        
+    <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/hmac-sha256.js"></script>
+    <script src="scripts/min/scripts.min.js"></script>        
 </body>
 </html>

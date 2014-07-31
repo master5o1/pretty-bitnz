@@ -67,53 +67,61 @@
 <script id="main.html" type="text/ng-template">
   <div class="content" ng-if="last_price">
       <h2 class="content-subhead">
-        Last Price: <strong>{{ last_price }}</strong> | 
-        Bid: <strong>{{ buy_price }}</strong> | 
-        Ask: <strong>{{ ask_price }}</strong>
+        Last Price: <strong>{{ last_price  | currency:'$' }}</strong> | 
+        Bid: <strong>{{ buy_price  | currency:'$' }}</strong> | 
+        Ask: <strong>{{ ask_price  | currency:'$' }}</strong>
       </h2>
 
-      <div class="pure-g">
+      <div class="pure-g ">
         <div class="pure-u-1-2">
-          <h3>Bids</h3>
-          <a class="pure-button" ng-click="prev_page('bids')">Prev</a>
-          {{bids_current_page + 1}}/{{bids_max_page + 1}}
-          <a class="pure-button" ng-click="next_page('bids')">Next</a>
-          <table class="pure-table">
-            <thead>
-                <tr>
-                    <th>Amount</th>                  
-                    <th>Rate</th>                  
-                </tr>
-            </thead>
+          <div class='order-table-container'>
+            <h3>Bids</h3>
+            <div class='page_buttons'>
+              <a class="pure-button pull-left" ng-click="prev_page('bids')">Prev</a>
+                {{bids_current_page + 1}}/{{bids_max_page + 1}}
+              <a class="pure-button pull-right" ng-click="next_page('bids')">Next</a>
+            </div>
+            <table class="pure-table">
+              <thead>
+                  <tr>
+                      <th>NZD Rate</th>                  
+                      <th>BTC Amount</th>                  
+                  </tr>
+              </thead>
 
-            <tbody>
-                <tr ng-repeat="bid in paged_bids">
-                    <td>{{bid[0]}}</td>
-                    <td>{{bid[1]}}</td>
-                </tr>
-            </tbody>
-          </table>
+              <tbody>
+                  <tr ng-repeat="bid in paged_bids">
+                      <td>{{bid[0] | currency:'$' }}</td>
+                      <td>{{bid[1]}}</td>
+                  </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
         <div class="pure-u-1-2">
-          <h3>Ask</h3>
-          <a class="pure-button" ng-click="prev_page('asks')">Prev</a>
-          {{asks_current_page + 1}} / {{asks_max_page + 1}}
-          <a class="pure-button" ng-click="next_page('asks')">Next</a>
-          <table class="pure-table">
-            <thead>
-                <tr>
-                    <th>Amount</th>                  
-                    <th>Rate</th>                  
-                </tr>
-            </thead>
+          <div class='order-table-container'>
+            <h3>Ask</h3>
+            <div class='page_buttons'>
+              <a class="pure-button pull-left" ng-click="prev_page('asks')">Prev</a>
+              {{asks_current_page + 1}} / {{asks_max_page + 1}}
+              <a class="pure-button pull-right" ng-click="next_page('asks')">Next</a>
+            </div>
+            <table class="pure-table">
+              <thead>
+                  <tr>
+                      <th>NZD Rate</th>                  
+                      <th>BTC Amount</th>                  
+                  </tr>
+              </thead>
 
-            <tbody>
-                <tr ng-repeat="ask in paged_asks">
-                    <td>{{ask[0]}}</td>
-                    <td>{{ask[1]}}</td>        
-                </tr>
-            </tbody>
-          </table>
+              <tbody>
+                  <tr ng-repeat="ask in paged_asks">
+                      <td>{{ask[0]  | currency:'$'}}</td>
+                      <td>{{ask[1]}}</td>        
+                  </tr>
+              </tbody>
+            </table>
+          </div>
         </div>      
     </div>
       

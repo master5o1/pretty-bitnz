@@ -57,7 +57,7 @@ angular.module('prettyBitnzApp')
   			var max_page = Math.floor(orders_to_filter.length / pagesize);
 
   			var page_to_move_to = Math.max(page, 0);
-  			page_to_move_to = Math.min(page, max_page);  		
+  			page_to_move_to = Math.min(page_to_move_to, max_page);  		
 
   			var current_page;
   			if (type == 'asks'){

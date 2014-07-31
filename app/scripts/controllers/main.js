@@ -24,9 +24,9 @@ angular.module('prettyBitnzApp')
 
   		t.init = function(){
   			BitNZ.ticker().success(function(data, status){
-		      	$scope.last_price = Money.format(data.last);
-		      	$scope.ask_price = Money.format(data.ask);
-		      	$scope.buy_price = Money.format(data.bid);
+		      	$scope.last_price = data.last;
+		      	$scope.ask_price = data.ask;
+		      	$scope.buy_price = data.bid;
 		    });
 
 		  	BitNZ.orderbook().success(function(data, status){

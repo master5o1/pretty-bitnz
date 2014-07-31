@@ -2,11 +2,9 @@ var gulp 		= require('gulp');
 // var uglify 		= require('gulp-uglify');
 var concatter 	= require('gulp-concat');
 var watch 		= require('gulp-watch');
-var minifyCSS 	= require('gulp-minify-css');
 var ngmin 		= require('gulp-ngmin');
 var less 		= require('gulp-less');
 var sourcemaps = require('gulp-sourcemaps');
-var rename 		= require('gulp-rename');
 
 gulp.task('compile-js', function(){	
 	gulp.src([

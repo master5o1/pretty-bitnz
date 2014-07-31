@@ -20,13 +20,15 @@ angular.module('prettyBitnzApp')
 	    $scope.asks = [];
 	    $scope.last_price = "Loading...";
       	$scope.ask_price = "Loading...";
-      	$scope.buy_price = "Loading...";
+      	$scope.bid_price = "Loading...";
+      	$scope.active_tab = 'buy';
+      	$scope.new_order = {}
 
   		t.init = function(){
   			BitNZ.ticker().success(function(data, status){
 		      	$scope.last_price = data.last;
 		      	$scope.ask_price = data.ask;
-		      	$scope.buy_price = data.bid;
+		      	$scope.bid_price = data.bid;
 		    });
 
 		  	BitNZ.orderbook().success(function(data, status){
@@ -81,7 +83,25 @@ angular.module('prettyBitnzApp')
   			
   		}
 
+  		$scope.switch_tab = function(tab_name){
+  			$scope.active_tab = tab_name;
+  		}
 
+  		$scope.use_last = function(){
+  			$scope.new_order.btc_rate = $scope.last_price;
+  		}
+
+  		$scope.use_bid = function(){
+  			$scope.new_order.btc_rate = $scope.bid_price;
+  		}
+
+  		$scope.use_ask = function(){
+  			$scope.new_order.btc_rate = $scope.ask_price;
+  		}
+
+  		$scope.use_remaining = function(){
+  			$scope.new_order.btc_amount = 0.5;
+  		}
 
   		t.init();
   });

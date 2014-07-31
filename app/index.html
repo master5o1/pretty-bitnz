@@ -35,18 +35,36 @@
         </div>      
 
     <div id="main">
+       <div class="header">
+        <h1>Pretty BitNZ</h1>
+        <h2>A nicer interface for our favourite New Zealand exchange</h2>
+      </div>
       <div ng-view=""></div>        
     </div>
 </div>
 
 <!---- VIEWS -->
-
-<script id="main.html" type="text/ng-template">
-    <div class="header">
-      <h1>Pretty BitNZ</h1>
-      <h2>A nicer interface for our favourite New Zealand exchange</h2>
+<script id="settings.html" type="text/ng-template">
+<form ng-submit="Authorize">
+  <div>
+    <label for="settings-username">Username:</label>
+    <input type="text" id="settings-username" ng-model="username" placeholder="" />
   </div>
-
+  <div>
+    <label for="settings-key">API Key:</label>
+    <input type="text" id="settings-key" ng-model="key" placeholder="" />
+  </div>
+  <div>
+    <label for="settings-secret">Secret:</label>
+    <input type="text" id="settings-secret" ng-model="secret" placeholder="" />
+  </div>
+  <div>
+    <input type="submit" value="Authorize" />
+  </div>
+  Authorized: {{ authorized }}
+</form>
+</script>
+<script id="main.html" type="text/ng-template">
   <div class="content" ng-if="last_price">
       <h2 class="content-subhead">
         Last Price: <strong>{{ last_price }}</strong> | 

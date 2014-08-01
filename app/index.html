@@ -11,31 +11,43 @@
     <body ng-app="prettyBitnzApp">
 
     <div id="layout" ng-controller="MasterCtrl" ng-class=" side_bar_toggled ? 'active' : ''">      
-        <!-- Menu toggle -->
-        <a href="#menu" id="menuLink" class="menu-link" ng-class=" side_bar_toggled ? 'active' : ''" ng-click="show_side_bar()">
-            <!-- Hamburger icon -->
-            <span></span>
-        </a>
+      <!-- Menu toggle -->
+      <a href="#menu" id="menuLink" class="menu-link" ng-class=" side_bar_toggled ? 'active' : ''" ng-click="show_side_bar()">
+          <!-- Hamburger icon -->
+          <span></span>
+      </a>
 
-        <div id="menu" ng-class=" side_bar_toggled ? 'active' : ''">
-            <div class="pure-menu pure-menu-open">
-                <a class="pure-menu-heading" href="#">Pretty BitNZ</a>
+      <div id="menu" ng-class=" side_bar_toggled ? 'active' : ''">
+          <div class="pure-menu pure-menu-open">
+              <a class="pure-menu-heading" href="#">Pretty BitNZ</a>
 
-                <ul>
-                    <li><a href="#">Home</a></li>
-                    <li><a href="#settings">Settings</a></li>
-                </ul>
-            </div>
-        </div>      
-
-    <div id="main">
-       <div class="header">
-        <h1>Pretty BitNZ</h1>
-        <h2>A nicer interface for our favourite New Zealand exchange</h2>
+              <ul>
+                  <li><a href="#">Home</a></li>
+                  <li><a href="#settings">Settings</a></li>
+              </ul>
+          </div>
       </div>
-      <div ng-view=""></div>        
+
+      <div id="ticker" ng-controller="TickerCtrl">
+        <span>Last Price: <strong>{{ ticker.last | currency:'$' }}</strong></span>
+        <span>Today's Low: <strong>{{ ticker.low | currency:'$' }}</strong></span>
+        <span>Today's High: <strong>{{ ticker.high | currency:'$' }}</strong></span>
+        <span>Current Bid: <strong>{{ ticker.bid | currency:'$' }}</strong></span>
+        <span>Current Ask: <strong>{{ ticker.ask | currency:'$' }}</strong></span>
+        <span>Volume: <strong>{{ ticker.volume | number:8 }}</strong></span>
+        <span>
+          <span class="pure-button button-xsmall" ng-click="Reload()">reload</span>
+        </span>
+      </div>
+
+      <div id="main">
+        <div class="header">
+          <h1>Pretty BitNZ</h1>
+          <h2>A nicer interface for our favourite New Zealand exchange</h2>
+        </div>
+        <div ng-view=""></div>        
+      </div>
     </div>
-</div>
 
 <!---- VIEWS -->
 <script id="settings.html" type="text/ng-template">

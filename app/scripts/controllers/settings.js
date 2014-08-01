@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('prettyBitnzApp')
-  .controller('SettingsCtrl', ['$scope', '$log', 'BitNZ', function($scope, $log, bitnz){
+  .controller('SettingsCtrl', ['$scope', '$log', 'BitNZ', 'PubSub', function($scope, $log, bitnz, PubSub){
     $scope.username = '';
     $scope.key = '';
     $scope.secret = '';
@@ -17,6 +17,7 @@ angular.module('prettyBitnzApp')
         if (!data.hasOwnProperty('result')) {
           $scope.authorized = true;
           $scope.authError = false;
+          PubSub.Publish('Authorized');
         } else {
           $scope.authError = true;
           $scope.errorMessage = data.message;

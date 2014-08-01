@@ -30,6 +30,31 @@
                   <li><a href="#about">About</a></li>
               </ul>
           </div>
+          <div class="balance" style="margin-top: 3.0em;" ng-controller="BalanceCtrl" ng-init="Start()">
+            <div ng-show="authorized">
+              <div>
+                <h5>Balances</h5>
+                <table>
+                  <tr>
+                    <td>NZD</td> <td>{{ balance.nzd_balance | number:8 }}</td>
+                  </tr>
+                  <tr>
+                    <td>BTC</td> <td>{{ balance.btc_balance | number:8 }}</td>
+                  </tr>
+                </table>
+
+                <h5>Available</h5>
+                <table>
+                  <tr>
+                    <td>NZD</td> <td>{{ balance.nzd_available | number:8 }}</td>
+                  </tr>
+                  <tr>
+                    <td>BTC</td> <td>{{ balance.btc_available | number:8 }}</td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
       </div>
 
       <div id="ticker" ng-controller="TickerCtrl">

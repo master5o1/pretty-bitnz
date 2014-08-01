@@ -71,7 +71,7 @@ angular.module('prettyBitnzApp')
         for (var key in unique_prices) {
           return_array.push(unique_prices[key]);
         };
-
+        
         return return_array;
       };
 

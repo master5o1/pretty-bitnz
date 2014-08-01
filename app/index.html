@@ -128,7 +128,7 @@
                   <tbody>
                       <tr ng-repeat="bid in paged_bids">
                           <td>{{bid.rate | currency:'$' }}</td>
-                          <td>{{bid.volume}} 
+                          <td>{{bid.volume | number:8 }}
                             <a class='order_popup' ng-show="bid.orders.length > 1" data-tooltip data-tooltip-label="Orders" data-tooltip-message="{{bid.order_description}}">({{ bid.orders.length }})</a>
 
                           </td> 
@@ -156,7 +156,7 @@
                   <tbody>
                       <tr ng-repeat="ask in paged_asks">
                           <td>{{ask.rate  | currency:'$'}}</td>
-                          <td>{{ask.volume}} 
+                          <td>{{ask.volume | number:8 }} 
                             <a class='order_popup' ng-show="ask.orders.length > 1" data-tooltip data-tooltip-label="Orders" data-tooltip-message="{{ask.order_description}}">({{ ask.orders.length }})</a>
 
                           </td> 

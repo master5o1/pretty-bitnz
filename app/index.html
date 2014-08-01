@@ -139,8 +139,11 @@
 
               <tbody>
                   <tr ng-repeat="bid in paged_bids">
-                      <td>{{bid[0] | currency:'$' }}</td>
-                      <td>{{bid[1]}}</td>
+                      <td>{{bid.rate | currency:'$' }}</td>
+                      <td>{{bid.volume}} 
+                        <a class='order_popup' ng-show="bid.orders.length > 1" data-tooltip data-tooltip-label="Orders" data-tooltip-message="{{bid.order_description}}">({{ bid.orders.length }})</a>
+
+                      </td> 
                   </tr>
               </tbody>
             </table>
@@ -164,19 +167,17 @@
 
               <tbody>
                   <tr ng-repeat="ask in paged_asks">
-                      <td>{{ask[0]  | currency:'$'}}</td>
-                      <td>{{ask[1]}}</td>        
+                      <td>{{ask.rate  | currency:'$'}}</td>
+                      <td>{{ask.volume}} 
+                        <a class='order_popup' ng-show="ask.orders.length > 1" data-tooltip data-tooltip-label="Orders" data-tooltip-message="{{ask.order_description}}">({{ ask.orders.length }})</a>
+
+                      </td> 
                   </tr>
               </tbody>
             </table>
           </div>
         </div>      
     </div>
-      
-      <h2 class="content-subhead">Try Resizing your Browser</h2>
-      <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-      </p>
   </div>
 </script>
     <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/hmac-sha256.js"></script>

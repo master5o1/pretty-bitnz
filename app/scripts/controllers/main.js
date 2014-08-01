@@ -8,7 +8,7 @@
  * Controller of the prettyBitnzApp
  */
 angular.module('prettyBitnzApp')
-  .controller('MainCtrl', function ($scope, $log, BitNZ, Money) {  		
+  .controller('MainCtrl', function ($scope, $log, BitNZ, Money, String_helper) {  		
 
   		var t = this;
 
@@ -33,14 +33,47 @@ angular.module('prettyBitnzApp')
 
 		  	BitNZ.orderbook().success(function(data, status){
 		  		console.log('orders', data);
-		  		$scope.bids = data.bids.reverse();
-		  		$scope.asks = data.asks.reverse();
+		  		$scope.bids = t.group_orders(data.bids);
+		  		$scope.asks = t.group_orders(data.asks);
 
 		  		$scope.change_page('bids', 0);
 		  		$scope.change_page('asks', 0);
 		  	});
 
   		};
+
+      t.group_orders = function(orders){        
+        var unique_prices = {};
+
+        for (var i = orders.length - 1; i >= 0; i--){
+          var rounded_rate = Money.pad(orders[i][0]);
+          var order = {
+            rate : orders[i][0],            
+            amount : orders[i][1]
+          };
+
+          if (typeof unique_prices[rounded_rate] === 'undefined'){
+            unique_prices[rounded_rate] = {
+              orders : [order],
+              rate : rounded_rate,
+              volume : order.amount,
+              order_description : String_helper.pad_string(20, '$' + order.rate, " ") +  'BTC ' + order.amount
+            };
+            
+          } else {
+            unique_prices[rounded_rate]['orders'].push(order);
+            unique_prices[rounded_rate]['volume'] += order.amount;
+            unique_prices[rounded_rate]['order_description'] += '\n' + String_helper.pad_string(20, '$' + order.rate, " ") +  'BTC ' + order.amount;
+          }
+        };
+
+        var return_array = [];
+        for (var key in unique_prices) {
+          return_array.push(unique_prices[key]);
+        };
+
+        return return_array;
+      };
 
   		$scope.next_page = function(type){
   			var current_page = (type === 'asks') ? $scope.asks_current_page : $scope.bids_current_page;
@@ -75,7 +108,7 @@ angular.module('prettyBitnzApp')
   			
   			var start = page_to_move_to * pagesize;
 
-  			if (type == 'asks'){  				
+  			if (type == 'asks'){
   				$scope.paged_asks = orders_to_filter.slice(start, start + pagesize);
   			} else {
   				$scope.paged_bids = orders_to_filter.slice(start, start + pagesize);

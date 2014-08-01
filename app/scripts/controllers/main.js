@@ -33,6 +33,8 @@ angular.module('prettyBitnzApp')
 
 		  	BitNZ.orderbook().success(function(data, status){
 		  		console.log('orders', data);
+          data.bids.sort(function(a, b){ return a[0] - b[0] });
+          data.asks.sort(function(a, b){ return b[0] - a[0] });
 		  		$scope.bids = t.group_orders(data.bids);
 		  		$scope.asks = t.group_orders(data.asks);
 
@@ -71,7 +73,7 @@ angular.module('prettyBitnzApp')
         for (var key in unique_prices) {
           return_array.push(unique_prices[key]);
         };
-        
+
         return return_array;
       };
 

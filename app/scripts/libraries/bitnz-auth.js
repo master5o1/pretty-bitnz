@@ -11,34 +11,32 @@ angular.module('prettyBitnzApp').service('BitNZAuth', function ($log, $rootScope
  	service.login_with_attempt = function(attempt, username, key, secret, success, error){ 		
 
  		BitNZ.authorize(username, key, secret);
-	      BitNZ.balance().success(function(data){
-	        $log.log(data);
-	        if (!data.hasOwnProperty('result')) {
-	          $rootScope.authorized = true;	          
-	          PubSub.Publish('Authorized');
-	          success();	          
+    BitNZ.balance().success(function(data){
+      $log.log(data);
+      if (!data.hasOwnProperty('result')) {
+        $rootScope.authorized = true;	          
+        PubSub.Publish('Authorized');
+        success();	          
 
-	        } else {
-	        	if (attempt < 3){	      			
-	        		console.log("Authentication failed. Trying again", attempt);
-	        		$timeout(function(){
-	        			service.login_with_attempt(attempt + 1, username, key, secret, success, error);
-	        		}, 500);
-	      			return 
-	      		}
-	          error(data.message);
-	        }
-	      }).error(function(){	      	
-	      	if (attempt < 3){	      		
-	      		console.log("Authentication failed. Trying again", attempt);	      		
-	      		$timeout(function(){
-        			service.login_with_attempt(attempt + 1, username, key, secret, success, error);
-        		}, 500);
-	      	}
-	        error();
-	      });
+      } else {
+      	if (attempt < 3){	      			
+      		console.log("Authentication failed. Trying again", attempt);
+      		$timeout(function(){
+      			service.login_with_attempt(attempt + 1, username, key, secret, success, error);
+      		}, 500);
+    			return 
+    		}
+        error(data.message);
+      }
+    }).error(function(){	      	
+    	if (attempt < 3){	      		
+    		console.log("Authentication failed. Trying again", attempt);	      		
+    		$timeout(function(){
+    			service.login_with_attempt(attempt + 1, username, key, secret, success, error);
+    		}, 500);
+    	}
+      error();
+    });
  	}
-
-
 	
 });

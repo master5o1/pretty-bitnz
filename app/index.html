@@ -57,16 +57,13 @@
           </div>
       </div>
 
-      <div id="ticker" ng-controller="TickerCtrl">
+      <div id="ticker" ng-controller="TickerCtrl" ng-init="Start()" ng-click="Reload()">
         <span>Last Price: <strong>{{ ticker.last | currency:'$' }}</strong></span>
         <span>Today's Low: <strong>{{ ticker.low | currency:'$' }}</strong></span>
         <span>Today's High: <strong>{{ ticker.high | currency:'$' }}</strong></span>
         <span>Current Bid: <strong>{{ ticker.bid | currency:'$' }}</strong></span>
         <span>Current Ask: <strong>{{ ticker.ask | currency:'$' }}</strong></span>
         <span>Volume: <strong>{{ ticker.volume | number:8 }}</strong></span>
-        <span>
-          <span class="pure-button button-xsmall" ng-click="Reload()">reload</span>
-        </span>
       </div>
 
       <div id="main">

@@ -8,17 +8,17 @@
  * Controller of the prettyBitnzApp
  */
 angular.module('prettyBitnzApp')
-  .controller('MainCtrl', function ($scope, $log, BitNZ, BitNZAuth, Money, String_helper, KeyStore) {  		
+  .controller('MainCtrl', function ($scope, $rootScope, $log, BitNZ, BitNZAuth, Money, String_helper, KeyStore) {     
 
-  		var t = this;
+      var t = this;
 
-	    $scope.bids_current_page = 0;
-	    $scope.asks_current_page = 0;
-	    $scope.bids_max_page = 1;
-	    $scope.asks_max_page = 1;
-	    $scope.bids = [];
-	    $scope.asks = [];
-	    $scope.last_price = "Loading...";
+      $scope.bids_current_page = 0;
+      $scope.asks_current_page = 0;
+      $scope.bids_max_page = 1;
+      $scope.asks_max_page = 1;
+      $scope.bids = [];
+      $scope.asks = [];
+      $scope.last_price = "Loading...";
       $scope.ask_price = "Loading...";
       $scope.bid_price = "Loading...";
       $scope.active_tab = 'buy';
@@ -27,33 +27,33 @@ angular.module('prettyBitnzApp')
         btc_rate : '',
       }
 
-  		t.init = function(){
+      t.init = function(){
 
         // check if we have some keys        
         $scope.show_password_field = localStorage.getItem('api_keys') != null;        
 
-  			BitNZ.ticker().success(function(data, status){
-		      	$scope.last_price = data.last;
-		      	$scope.ask_price = data.ask;
-		      	$scope.bid_price = data.bid;
-		    });
+        BitNZ.ticker().success(function(data, status){
+            $scope.last_price = data.last;
+            $scope.ask_price = data.ask;
+            $scope.bid_price = data.bid;
+        });
 
-		  	BitNZ.orderbook().success(function(data, status){
-		  		console.log('orders', data);
+        BitNZ.orderbook().success(function(data, status){
+          console.log('orders', data);
           data.bids.sort(function(a, b){ return a[0] - b[0] });
           data.asks.sort(function(a, b){ return b[0] - a[0] });
-		  		$scope.bids = t.group_orders(data.bids);
-		  		$scope.asks = t.group_orders(data.asks);
+          $scope.bids = t.group_orders(data.bids);
+          $scope.asks = t.group_orders(data.asks);
 
-		  		$scope.change_page('bids', 0);
-		  		$scope.change_page('asks', 0);
-		  	});
+          $scope.change_page('bids', 0);
+          $scope.change_page('asks', 0);
+        });
 
         var a_week_ago = new moment().subtract('days', 14).format("X"); // unix timestamp
 
         $scope.chart_url = "https://bitnz.com/api/0/trades_chart?width=800&height=500&since_date=" + a_week_ago;
 
-  		};
+      };
 
       $scope.unlock = function(){
         
@@ -109,68 +109,77 @@ angular.module('prettyBitnzApp')
         return return_array;
       };
 
-  		$scope.next_page = function(type){
-  			var current_page = (type === 'asks') ? $scope.asks_current_page : $scope.bids_current_page;
-  			$scope.change_page(type, current_page + 1);
-  		}
+      $scope.next_page = function(type){
+        var current_page = (type === 'asks') ? $scope.asks_current_page : $scope.bids_current_page;
+        $scope.change_page(type, current_page + 1);
+      }
 
-  		$scope.prev_page = function(type){  			
-  			var current_page = type === 'asks' ? $scope.asks_current_page : $scope.bids_current_page;
-  			$scope.change_page(type, current_page - 1);  		
-  		}  		
+      $scope.prev_page = function(type){        
+        var current_page = type === 'asks' ? $scope.asks_current_page : $scope.bids_current_page;
+        $scope.change_page(type, current_page - 1);     
+      }     
 
-  		$scope.change_page = function(type, page){
+      $scope.change_page = function(type, page){
 
-  			var orders_to_filter = (type == 'asks') ? $scope.asks : $scope.bids;
-  			var pagesize = 8;  			
-  			var max_page = Math.floor(orders_to_filter.length / pagesize);
+        var orders_to_filter = (type == 'asks') ? $scope.asks : $scope.bids;
+        var pagesize = 8;       
+        var max_page = Math.floor(orders_to_filter.length / pagesize);
 
-  			var page_to_move_to = Math.max(page, 0);
-  			page_to_move_to = Math.min(page_to_move_to, max_page);  		
+        var page_to_move_to = Math.max(page, 0);
+        page_to_move_to = Math.min(page_to_move_to, max_page);      
 
-  			var current_page;
-  			if (type == 'asks'){
-  				current_page = $scope.asks_current_page;
-  				$scope.asks_current_page = page_to_move_to;
-  				$scope.asks_max_page = max_page;
-  			} else {
-  				current_page = $scope.bids_current_page;
-  				$scope.bids_current_page = page_to_move_to;
-  				$scope.bids_max_page = max_page;
-  			}
+        var current_page;
+        if (type == 'asks'){
+          current_page = $scope.asks_current_page;
+          $scope.asks_current_page = page_to_move_to;
+          $scope.asks_max_page = max_page;
+        } else {
+          current_page = $scope.bids_current_page;
+          $scope.bids_current_page = page_to_move_to;
+          $scope.bids_max_page = max_page;
+        }
 
-  			
-  			var start = page_to_move_to * pagesize;
+        
+        var start = page_to_move_to * pagesize;
 
-  			if (type == 'asks'){
-  				$scope.paged_asks = orders_to_filter.slice(start, start + pagesize);
-  			} else {
-  				$scope.paged_bids = orders_to_filter.slice(start, start + pagesize);
-  			}
-  			
-  		}
+        if (type == 'asks'){
+          $scope.paged_asks = orders_to_filter.slice(start, start + pagesize);
+        } else {
+          $scope.paged_bids = orders_to_filter.slice(start, start + pagesize);
+        }
+        
+      }
 
       
 
-  		$scope.switch_tab = function(tab_name){
-  			$scope.active_tab = tab_name;
-  		}
+      $scope.switch_tab = function(tab_name){
+        $scope.active_tab = tab_name;
+      }
 
-  		$scope.use_last = function(){
-  			$scope.new_order.btc_rate = $scope.last_price;
-  		}
+      $scope.use_last = function(){
+        $scope.new_order.btc_rate = $scope.last_price;
+      }
 
-  		$scope.use_bid = function(){
-  			$scope.new_order.btc_rate = $scope.bid_price;
-  		}
+      $scope.use_bid = function(){
+        $scope.new_order.btc_rate = $scope.bid_price;
+      }
 
-  		$scope.use_ask = function(){
-  			$scope.new_order.btc_rate = $scope.ask_price;
-  		}
+      $scope.use_ask = function(){
+        $scope.new_order.btc_rate = $scope.ask_price;
+      }
 
-  		$scope.use_remaining = function(){
-  			$scope.new_order.btc_amount = 0.5;
-  		}
+      $scope.use_remaining = function(){
+        if (typeof $rootScope.balance !== 'undefined') {
+          if ($scope.active_tab === 'buy' && $rootScope.balance.hasOwnProperty('nzd_available')) {
+            $scope.new_order.btc_rate = $scope.new_order.btc_rate || $scope.ask_price
+            $scope.new_order.btc_amount = $rootScope.balance.nzd_available / $scope.new_order.btc_rate;
+          }
+          if ($scope.active_tab === 'sell' && $rootScope.balance.hasOwnProperty('btc_available')) {
+            $scope.new_order.btc_rate = $scope.new_order.btc_rate || $scope.bid_price
+            $scope.new_order.btc_amount = $rootScope.balance.btc_available;
+          }
+        }
+      }
 
-  		t.init();
+      t.init();
   });

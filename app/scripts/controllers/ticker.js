@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('prettyBitnzApp')
-  .controller('TickerCtrl', ['$scope', '$rootScope', '$log', 'BitNZ', function($scope, $rootScope, $log, bitnz){
+  .controller('TickerCtrl', ['$scope', '$rootScope', '$interval', '$log', 'BitNZ', function($scope, $rootScope, $interval, $log, bitnz){
     $scope.ticker = {};
    
     var interval = null;
@@ -18,23 +18,21 @@ angular.module('prettyBitnzApp')
       });
     };
 
-    fn();
-
     $scope.Reload = function() {
       fn();
     };
    
-    // $scope.Start = function() {
-    //   $log.info('ticker', 'start');
-    //   fn();
-    //   interval = $interval(fn, 60 * 1000);
-    // };
+    $scope.Start = function() {
+      $log.info('ticker', 'start');
+      fn();
+      interval = $interval(fn, 60 * 1000);
+    };
    
-    // $scope.Stop = function() {
-    //   $log.info('ticker', 'stop');
-    //   if (angular.isDefined(interval)) {
-    //     $interval.cancel(interval);
-    //     interval = undefined;
-    //   }
-    // };
+    $scope.Stop = function() {
+      $log.info('ticker', 'stop');
+      if (angular.isDefined(interval)) {
+        $interval.cancel(interval);
+        interval = undefined;
+      }
+    };
   }]);

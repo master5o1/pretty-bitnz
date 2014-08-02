@@ -1,18 +1,18 @@
 'use strict';
 
 angular.module('prettyBitnzApp')
-  .controller('BalanceCtrl', ['$scope', '$log', '$interval', 'BitNZ', 'PubSub', function($scope, $log, $interval, bitnz, PubSub){
+  .controller('BalanceCtrl', function($scope, $rootScope, $log, $interval, BitNZ, PubSub){
     var interval = null;
     
-    $scope.balance = {};
+    $rootScope.balance = {};
     $scope.haveBalance = false;
       
     var load = function(){
-      bitnz.balance().success(function(data){
+      BitNZ.balance().success(function(data){
         $scope.haveBalance = true;
         if (!data.hasOwnProperty('result')) {
           $log.log('balance', data);
-          $scope.balance = data;
+          $rootScope.balance = data;
           $scope.haveBalance = true;
         } else {
           stop();
@@ -37,7 +37,13 @@ angular.module('prettyBitnzApp')
       }
     };
 
+    var update = function(){
+      stop();
+      start();
+    };
+
     $scope.Load = load;
     PubSub.Subscribe('Authorized', start);
+    PubSub.Subscribe('Update', update);
 
-  }]);
+  });

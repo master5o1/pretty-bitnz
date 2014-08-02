@@ -8,7 +8,7 @@
  * Controller of the prettyBitnzApp
  */
 angular.module('prettyBitnzApp')
-  .controller('MainCtrl', function ($scope, $log, BitNZ, Money, String_helper) {  		
+  .controller('MainCtrl', function ($scope, $log, BitNZ, BitNZAuth, Money, String_helper, KeyStore) {  		
 
   		var t = this;
 
@@ -19,12 +19,16 @@ angular.module('prettyBitnzApp')
 	    $scope.bids = [];
 	    $scope.asks = [];
 	    $scope.last_price = "Loading...";
-      	$scope.ask_price = "Loading...";
-      	$scope.bid_price = "Loading...";
-      	$scope.active_tab = 'buy';
-      	$scope.new_order = {}
+      $scope.ask_price = "Loading...";
+      $scope.bid_price = "Loading...";
+      $scope.active_tab = 'buy';
+      $scope.new_order = {}
 
   		t.init = function(){
+
+        // check if we have some keys        
+        $scope.show_password_field = localStorage.getItem('api_keys') != null;        
+
   			BitNZ.ticker().success(function(data, status){
 		      	$scope.last_price = data.last;
 		      	$scope.ask_price = data.ask;
@@ -42,7 +46,32 @@ angular.module('prettyBitnzApp')
 		  		$scope.change_page('asks', 0);
 		  	});
 
+        var a_week_ago = new moment().subtract('days', 14).format("X"); // unix timestamp
+
+        $scope.chart_url = "https://bitnz.com/api/0/trades_chart?width=800&height=500&since_date=" + a_week_ago;
+
   		};
+
+      $scope.unlock = function(){
+        
+        if (! $scope.unlock.keystore_password){
+          alert("Invalid password");
+          return;
+        }
+
+        var result = KeyStore.retrieve_keys($scope.unlock.keystore_password);
+        if (! result){
+          alert('invalid password');          
+        }
+        else
+        {
+          BitNZAuth.login(result.username, result.api_key, result.secret, function(){
+            // logged in
+          }, function(error){                        
+            alert(error);
+          })
+        }
+      }
 
       t.group_orders = function(orders){        
         var unique_prices = {};

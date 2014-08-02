@@ -23,8 +23,8 @@
 
               <ul>
                   <li><a href="#">Home</a></li>
-                  <li><a href="#trade">Trade</a></li>
-                  <li><a href="#history">History</a></li>
+                  <li ng-show="authorized"><a href="#trade">Trade</a></li>
+                  <li ng-show="authorized"><a href="#history">History</a></li>
                   <li><a href="#settings">Settings</a></li>
                   <li><a href="#help">Help</a></li>
                   <li><a href="#about">About</a></li>
@@ -80,14 +80,21 @@
 
     <!---- VIEWS -->
     <script id="main.html" type="text/ng-template">
-      <div class="content" ng-if="last_price">
-          <h2 class="content-subhead">
-            Last Price: <strong>{{ last_price  | currency:'$' }}</strong> | 
-            Bid: <strong>{{ bid_price  | currency:'$' }}</strong> | 
-            Ask: <strong>{{ ask_price  | currency:'$' }}</strong>
-          </h2>
-          <hr />
-          <form class="pure-form pure-form-aligned order-form">
+      <div class="content" ng-if="last_price">         
+          <div ng-show="! authorized"> 
+            <div ng-show="show_password_field">
+              <form ng-submit="unlock()" class="pure-form">                
+                <div class="pure-control-group">
+                  <label for="settings-secret">Password</label>
+                  <input type="password" ng-model="unlock.keystore_password" placeholder="" />
+                  <button type="submit" class="pure-button pure-button-primary">Unlock</button>                
+                  
+                </div>
+              </form>
+              <hr/>
+            </div>
+          </div>
+          <form class="pure-form pure-form-aligned order-form"  ng-show="authorized">
             <ul class="pure-paginator">            
                 <li><a class="pure-button" ng-class="active_tab == 'buy' ? 'pure-button-active button-secondary' : ''" ng-click="switch_tab('buy')">New Buy Order</a></li>
                 <li><a class="pure-button"  ng-class="active_tab == 'sell' ? 'pure-button-active button-secondary' : ''" ng-click="switch_tab('sell')">New Sell Order</a></li>            
@@ -131,8 +138,8 @@
                     <button type="submit" class="pull-right pure-button pure-button-primary" ng-click="create_order()">Buy BTC</button>
                 </div>
             </fieldset>
-        </form>
-        <hr />
+            <hr />
+        </form>     
           <div class="pure-g ">
             <div class="pure-u-1-2 order-table-containers">
               <div class='order-table-container'>
@@ -191,6 +198,13 @@
               </div>
             </div>      
         </div>
+
+        <p>
+          <hr/>
+        </p>
+        <p>
+          <img ng-src="{{ chart_url }}" style='width:800px;height:600px;' />
+        </p>
       </div>
     </script>
     <script id="trade.html" type="text/ng-template">
@@ -219,6 +233,10 @@
             <label for="settings-secret">Secret:</label>
             <input type="text" id="settings-secret" ng-model="secret" placeholder="" />
           </div>
+          <div class="pure-control-group">
+            <label for="settings-secret">Password for storing keys in your browser:</label>
+            <input type="password" id="settings-secret" ng-model="password" placeholder="" />
+          </div>
           <div class="pure-controls">
             <button type="submit" class="pure-button pure-button-primary">Authorize</button>
           </div>
@@ -226,7 +244,8 @@
             Authorization error: {{ errorMessage }}
           </div>
           <div>
-            Authorized: {{ authorized }}
+            <span ng-if="authorized" class='coloured-label coloured-label-green'>Authorized</span>
+            <span ng-if="! authorized"  class='coloured-label coloured-label-red'>Not authorized</span>            
           </div>
         </form>
       </div>
@@ -241,8 +260,7 @@
         About this project.
       </div>
     </script>
-
-    <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/hmac-sha256.js"></script>
+    
     <script src="scripts/min/scripts.min.js"></script>        
 </body>
 </html>

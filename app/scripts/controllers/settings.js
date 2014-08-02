@@ -1,12 +1,12 @@
 'use strict';
 
 angular.module('prettyBitnzApp')
-  .controller('SettingsCtrl', ['$scope', '$log', 'BitNZ', 'PubSub', function($scope, $log, bitnz, PubSub){
+  .controller('SettingsCtrl', ['$scope', '$rootScope', '$log', 'BitNZ', 'PubSub', function($scope, $rootScope, $log, bitnz, PubSub){
     $scope.username = '';
     $scope.key = '';
     $scope.secret = '';
     
-    $scope.authorized = false;
+    $rootScope.authorized = false;
     $scope.authError = false;
     $scope.errorMessage = '';
 
@@ -15,7 +15,7 @@ angular.module('prettyBitnzApp')
       bitnz.balance().success(function(data){
         $log.log(data);
         if (!data.hasOwnProperty('result')) {
-          $scope.authorized = true;
+          $rootScope.authorized = true;
           $scope.authError = false;
           PubSub.Publish('Authorized');
         } else {

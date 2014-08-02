@@ -5,23 +5,21 @@ angular.module('prettyBitnzApp')
     var interval = null;
     
     $scope.balance = {};
-    $scope.authorized = false;
+    $scope.haveBalance = false;
       
     var load = function(){
-      $log.info('run');
       bitnz.balance().success(function(data){
-        $scope.authorized = true;
+        $scope.haveBalance = true;
         if (!data.hasOwnProperty('result')) {
           $log.log('balance', data);
           $scope.balance = data;
-          $scope.authorized = true;
+          $scope.haveBalance = true;
         } else {
           stop();
         }
       }).error(function(data){
-        $log.error('balance', data);
         stop();
-        $scope.authorized = false;
+        $scope.haveBalance = false;
       });
     };
    

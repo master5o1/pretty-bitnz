@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('prettyBitnzApp')
-  .controller('TickerCtrl', ['$scope', '$log', 'BitNZ', function($scope, $log, bitnz){
+  .controller('TickerCtrl', ['$scope', '$rootScope', '$log', 'BitNZ', function($scope, $rootScope, $log, bitnz){
     $scope.ticker = {};
    
     var interval = null;
@@ -11,6 +11,7 @@ angular.module('prettyBitnzApp')
       bitnz.ticker().success(function(data){
         $log.log('ticker', data);
         $scope.ticker = data;
+        $rootScope.current_nzd_price = data.last;
       }).error(function(data){
         $log.error('ticker', data);
         // $scope.Stop();

@@ -22,7 +22,10 @@ angular.module('prettyBitnzApp')
       $scope.ask_price = "Loading...";
       $scope.bid_price = "Loading...";
       $scope.active_tab = 'buy';
-      $scope.new_order = {}
+      $scope.new_order = {
+        btc_rate : '',
+        btc_rate : '',
+      }
 
   		t.init = function(){
 
@@ -146,6 +149,8 @@ angular.module('prettyBitnzApp')
   			}
   			
   		}
+
+      
 
   		$scope.switch_tab = function(tab_name){
   			$scope.active_tab = tab_name;

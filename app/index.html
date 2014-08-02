@@ -22,8 +22,8 @@
               <a class="pure-menu-heading" href="#">Pretty BitNZ</a>
 
               <ul>
-                  <li><a href="#">Home</a></li>
-                  <li ng-show="authorized"><a href="#trade">Trade</a></li>
+                  <li ng-show="! authorized"><a href="#">Home</a></li>
+                  <li ng-show="authorized"><a href="#">Trade</a></li>
                   <li ng-show="authorized"><a href="#history">History</a></li>
                   <li><a href="#settings">Settings</a></li>
                   <li><a href="#help">Help</a></li>
@@ -115,13 +115,13 @@
             <fieldset ng-show="active_tab == 'buy'">            
                 <div class="pure-control-group">
                     <label for="name">Buy BTC Amount</label>
-                    <input required ng-model="new_order.btc_amount" type="number" step="0.0000000001" placeholder="Eg. 0.1">
+                    <input required ng-model="new_order.btc_amount" type="text" step="0.0000000001" placeholder="Eg. 0.1">
                     <a class="pure-button button-small" ng-click="use_remaining()">Use Remaining NZD</a>                
                 </div>
 
                 <div class="pure-control-group">
                     <label for="name">At NZD Rate</label>
-                    <input required ng-model="new_order.btc_rate" type="number" step="0.01" placeholder="Eg. $683.23">
+                    <input required ng-model="new_order.btc_rate" type="text" step="0.01" placeholder="Eg. $683.23">
                     <a class="pure-button button-small" ng-click="use_last()">Last Price</a>
                     <a class="pure-button button-small" ng-click="use_ask()">Ask</a>
                     <a class="pure-button button-small" ng-click="use_bid()">Bid</a>
@@ -168,17 +168,23 @@
                   <thead>
                       <tr>
                           <th>NZD Rate</th>                  
-                          <th>BTC Amount</th>                  
+                          <th>BTC Amount</th>
+                          <th>Value</div>
                       </tr>
                   </thead>
 
                   <tbody>
                       <tr ng-repeat="bid in paged_bids">
-                          <td>{{bid.rate | currency:'$' }}</td>
+                          <td>
+                            <a ng-class="authorized ? 'pure-button' : ''" ng-click="new_order.btc_rate = bid.rate">{{bid.rate  | currency:'$'}}
+                            </a>
+                          </td>
                           <td>{{bid.volume | number:8 }}
                             <a class='order_popup' ng-show="bid.orders.length > 1" data-tooltip data-tooltip-label="Orders" data-tooltip-message="{{bid.order_description}}">({{ bid.orders.length }})</a>
-
                           </td> 
+                          <td>
+                            {{ bid.volume * current_nzd_price | currency:'$' }}
+                          </div>
                       </tr>
                   </tbody>
                 </table>
@@ -196,23 +202,30 @@
                   <thead>
                       <tr>
                           <th>NZD Rate</th>                  
-                          <th>BTC Amount</th>                  
+                          <th>BTC Amount</th>
+                          <th>Value</th>
                       </tr>
                   </thead>
 
                   <tbody>
                       <tr ng-repeat="ask in paged_asks">
-                          <td>{{ask.rate  | currency:'$'}}</td>
+                          <td>
+                            <a ng-class="authorized ? 'pure-button' : ''" ng-click="new_order.btc_rate = ask.rate">{{ask.rate  | currency:'$'}}
+                            </a>
+                          </td>
                           <td>{{ask.volume | number:8 }} 
                             <a class='order_popup' ng-show="ask.orders.length > 1" data-tooltip data-tooltip-label="Orders" data-tooltip-message="{{ask.order_description}}">({{ ask.orders.length }})</a>
 
                           </td> 
+                          <td>
+                            {{ ask.volume * current_nzd_price | currency:'$' }}
+                          </div>
                       </tr>
                   </tbody>
                 </table>
               </div>
             </div>      
-        </div>
+          </div>
 
         <p>
           <hr/>
@@ -222,16 +235,73 @@
         </p>
       </div>
     </script>
-    <script id="trade.html" type="text/ng-template">
-      <div>
-        Move trade form and copy orderbook to here.
-      </div>
+
+    <!-------- HISTORY -------->
+
+    <script id="history.html" type="text/ng-template">      
+          <div class="pure-g ">
+            <div class="pure-u-1-2 order-table-containers">
+              <div class='order-table-container'>
+                <h3>Buys</h3>
+                <div class='page_buttons'>
+                  <a class="pure-button pull-left" ng-click="prev_page('closed_buys')">Prev</a>
+                    {{ closed_buys_current_page + 1}}/{{ closed_buys_max_page + 1}}
+                  <a class="pure-button pull-right" ng-click="next_page('closed_buys')">Next</a>
+                </div>
+                <table class="pure-table">
+                  <thead>
+                      <tr>
+                          <th>NZD Rate</th>                  
+                          <th>BTC Amount</th>                  
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr ng-repeat="order in closed_buys">
+                          <td>{{order.rate | currency:'$' }}</td>
+                          <td>{{order.volume | number:8 }}
+                            <a class='order_popup' ng-show="order.orders.length > 1" data-tooltip data-tooltip-label="Orders" data-tooltip-message="{{order.order_description}}">({{ order.orders.length }})</a>
+
+                          </td> 
+                      </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="pure-u-1-2">
+              <div class='order-table-container'>
+                <h3>Sales</h3>
+                <div class='page_buttons'>
+                  <a class="pure-button pull-left" ng-click="prev_page('closed_sells')">Prev</a>
+                  {{asks_current_page + 1}} / {{asks_max_page + 1}}
+                  <a class="pure-button pull-right" ng-click="next_page('closed_sells')">Next</a>
+                </div>
+                <table class="pure-table">
+                  <thead>
+                      <tr>
+                          <th>NZD Rate</th>                  
+                          <th>BTC Amount</th>                  
+                      </tr>
+                  </thead>
+
+                  <tbody>
+                      <tr ng-repeat="order in closed_sells">
+                          <td>{{order.rate  | currency:'$'}}</td>
+                          <td>{{order.volume | number:8 }} 
+                            <a class='order_popup' ng-show="order.orders.length > 1" data-tooltip data-tooltip-label="Orders" data-tooltip-message="{{order.order_description}}">({{ ask.orders.length }})</a>
+
+                          </td> 
+                      </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>      
+        </div>
     </script>
-    <script id="history.html" type="text/ng-template">
-      <div>
-        User trade history displayed here.
-      </div>
-    </script>
+
+
+
+
+    <!-------- Settings -------->
     <script id="settings.html" type="text/ng-template">
       <div class="content">
         <h2 class="content-subhead">Settings</h2>

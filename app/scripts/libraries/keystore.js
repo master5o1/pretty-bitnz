@@ -39,6 +39,7 @@ angular.module('prettyBitnzApp').service('KeyStore', function ($log, EncryptServ
 
         // Update local storage key
         els.set('api_keys', JSON.stringify(key_object));
+        localStorage.setItem('username', username);
        
 	}
 

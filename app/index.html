@@ -33,10 +33,10 @@
           <div class="balance" style="margin-top: 3.0em;" ng-controller="BalanceCtrl" ng-init="Start()">
             <div ng-show="haveBalance">
               <div>
-                <h5>Balances</h5>
+                <h5>Balance for {{username}}</h5>
                 <table>
                   <tr>
-                    <td>NZD</td> <td>{{ balance.nzd_balance | number:8 }}</td>
+                    <td>NZD</td> <td>{{ balance.nzd_balance | number:6 }}</td>
                   </tr>
                   <tr>
                     <td>BTC</td> <td>{{ balance.btc_balance | number:8 }}</td>
@@ -46,7 +46,7 @@
                 <h5>Available</h5>
                 <table>
                   <tr>
-                    <td>NZD</td> <td>{{ balance.nzd_available | number:8 }}</td>
+                    <td>NZD</td> <td>{{ balance.nzd_available | number:6 }}</td>
                   </tr>
                   <tr>
                     <td>BTC</td> <td>{{ balance.btc_available | number:8 }}</td>
@@ -80,20 +80,33 @@
 
     <!---- VIEWS -->
     <script id="main.html" type="text/ng-template">
-      <div class="content" ng-if="last_price">         
+      <div class="content" ng-if="last_price">     
+
+          <!--- Unauthorized stuff -->    
           <div ng-show="! authorized"> 
+
+            <div ng-show="! show_password_field">
+              <aside>
+                  <p>
+                      You are not logged in. <a href="#settings">Click here</a> to add your API Keys from BitNZ
+                  </p>
+              </aside>
+            </div>
+
+            <!--- Unlock encrypted keys form -->
             <div ng-show="show_password_field">
               <form ng-submit="unlock()" class="pure-form">                
                 <div class="pure-control-group">
-                  <label for="settings-secret">Password</label>
+                  <label for="settings-secret">Enter the password for <strong>{{username}}</strong>. </label>
                   <input type="password" ng-model="unlock.keystore_password" placeholder="" />
-                  <button type="submit" class="pure-button pure-button-primary">Unlock</button>                
-                  
+                  <button type="submit" class="pure-button pure-button-primary">Unlock</button>
                 </div>
               </form>
               <hr/>
             </div>
           </div>
+
+          <!-- buy form -->
           <form class="pure-form pure-form-aligned order-form"  ng-show="authorized">
             <ul class="pure-paginator">            
                 <li><a class="pure-button" ng-class="active_tab == 'buy' ? 'pure-button-active button-secondary' : ''" ng-click="switch_tab('buy')">New Buy Order</a></li>
@@ -139,7 +152,9 @@
                 </div>
             </fieldset>
             <hr />
-        </form>     
+          </form>
+
+          <!-- Order Book -->
           <div class="pure-g ">
             <div class="pure-u-1-2 order-table-containers">
               <div class='order-table-container'>

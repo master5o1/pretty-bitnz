@@ -16,8 +16,7 @@ angular.module('prettyBitnzApp').service('KeyStore', function ($log, EncryptServ
  
 	    // Get the current text and encrypted text from localstorage (if any).
 	    try {
-    		var decrypted_text = els.get(key);
-    		console.log('decrypted_text', decrypted_text);
+    		var decrypted_text = els.get(key);    		
     		return JSON.parse(decrypted_text);	
 		}
 		catch(err) {

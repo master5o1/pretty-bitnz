@@ -6,7 +6,7 @@ angular.module('prettyBitnzApp')
    
     var interval = null;
    
-    var fn = function(){
+    var load = function(){
       $log.info('run');
       bitnz.ticker().success(function(data){
         $log.log('ticker', data);
@@ -14,22 +14,21 @@ angular.module('prettyBitnzApp')
         $rootScope.current_nzd_price = data.last;
       }).error(function(data){
         $log.error('ticker', data);
-        // $scope.Stop();
+        $scope.Stop();
       });
     };
 
     $scope.Reload = function() {
-      fn();
+      stop();
+      start();
     };
    
     $scope.Start = function() {
-      $log.info('ticker', 'start');
-      fn();
-      interval = $interval(fn, 60 * 1000);
+      load();
+      interval = $interval(load, 60 * 1000);
     };
    
     $scope.Stop = function() {
-      $log.info('ticker', 'stop');
       if (angular.isDefined(interval)) {
         $interval.cancel(interval);
         interval = undefined;

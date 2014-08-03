@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('prettyBitnzApp')
-  .controller('HistoryCtrl', function($scope, $rootScope, $interval, $log, BitNZ, PubSub){
+  .controller('HistoryCtrl', function($scope, $rootScope, $interval, $log, BitNZ, PubSub, notify){
     
     var interval = null;
     var pageSize = 10;
@@ -15,6 +15,9 @@ angular.module('prettyBitnzApp')
     $scope.asks_current_page = 0;
     $scope.asks_max_page = 0;
 
+    $scope.last_buy_check = null;
+    $scope.last_ask_check = null;
+
     var load = function(){
       $log.log('load history');
       if (!$rootScope.authorized) {
@@ -23,7 +26,9 @@ angular.module('prettyBitnzApp')
       BitNZ.orders_buy_closed(0, 0).success(function(data){
         $log.log('load history buys');
         $scope.closed_buys = process(data);        
-        $scope.change_page('bids', 0);        
+        $scope.change_page('bids', 0);     
+        $scope.last_buy_check = new moment();
+    
       }).error(function(data){
         $scope.Stop();
       });
@@ -32,19 +37,36 @@ angular.module('prettyBitnzApp')
         $log.log('load history sells');
         $scope.closed_sells = process(data);        
         $scope.change_page('asks', 0);
+        $scope.last_sell_check = new moment();
       }).error(function(data){
         $scope.Stop();
       });
     };
 
-    var process = function(data){
+    var notify_new_order = function(order, type){
+      var date = moment.unix(order.date);
+      notify("Order fulfilled: Amount: " + order.amount + " at $" + order.price + " " + date.humanize());
+    };
+
+    var process = function(data, type){      
+
+      var date_to_compare = type == 'bids' ? $scope.last_buy_check : $scope.last_ask_check;
+
       (data || []).sort(function(a, b){ return b.date - a.date });
       var orders = [];
       for (var i = 0; i < data.length; i++) {
+
+        var order_date = moment.unix(data[i].date);
+
+
+        if (date_to_compare !== null && order_date > date_to_compare){
+          notify_new_order(data[i], type);
+        }
+
         var order = {
           price: data[i].price,
           volume: data[i].amount,
-          date_formatted: moment.unix(data[i].date).format("DD MMM h:mm a"),
+          date_formatted: order_date.format("DD MMM h:mm a"),
           id: data[i].id
         };
         orders.push(order);

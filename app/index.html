@@ -313,12 +313,11 @@
 
     <!-------- HISTORY -------->
 
-    <script id="history.html" type="text/ng-template">
-        <div class="content">
-          <div class="pure-g ">
-            <div class="pure-u-1-2 order-table-containers">
+    <script id="history.html" type="text/ng-template">      
+          <div class="content">
+            <div class="order-table-containers">
               <div class='order-table-container'>
-                <h3>Buys</h3>
+                <h3>Closed Bids</h3>
                 <div class='page_buttons'>
                   <a class="pure-button pull-left" ng-click="prev_page('closed_buys')">Prev</a>
                     {{ closed_buys_current_page + 1}}/{{ closed_buys_max_page + 1}}
@@ -327,51 +326,50 @@
                 <table class="pure-table">
                   <thead>
                       <tr>
-                          <th>NZD Rate</th>                  
-                          <th>BTC Amount</th>                  
+                          <th>Date</th>
+                          <th>NZD Rate</th>
+                          <th>BTC Bought</th>
+                          <th>NZD Spent</th>
                       </tr>
                   </thead>
                   <tbody>
-                      <tr ng-repeat="order in closed_buys">
-                          <td>{{order.rate | currency:'$' }}</td>
-                          <td>{{order.volume | number:8 }}
-                            <a class='order_popup' ng-show="order.orders.length > 1" data-tooltip data-tooltip-label="Orders" data-tooltip-message="{{order.order_description}}">({{ order.orders.length }})</a>
-
-                          </td> 
+                      <tr ng-repeat="order in paged_closed_buys">
+                          <th>{{ order.date | date:'short' }}</th>
+                          <td>{{ order.price  | currency:'$' }}</td>
+                          <td>{{ order.volume | number:8 }}</td> 
+                          <td>{{ order.price * order.volume | currency:'$' }}</td>
                       </tr>
                   </tbody>
                 </table>
               </div>
             </div>
-            <div class="pure-u-1-2">
-              <div class='order-table-container'>
-                <h3>Sales</h3>
-                <div class='page_buttons'>
-                  <a class="pure-button pull-left" ng-click="prev_page('closed_sells')">Prev</a>
-                  {{asks_current_page + 1}} / {{asks_max_page + 1}}
-                  <a class="pure-button pull-right" ng-click="next_page('closed_sells')">Next</a>
-                </div>
-                <table class="pure-table">
-                  <thead>
-                      <tr>
-                          <th>NZD Rate</th>                  
-                          <th>BTC Amount</th>                  
-                      </tr>
-                  </thead>
-
-                  <tbody>
-                      <tr ng-repeat="order in closed_sells">
-                          <td>{{order.rate  | currency:'$'}}</td>
-                          <td>{{order.volume | number:8 }} 
-                            <a class='order_popup' ng-show="order.orders.length > 1" data-tooltip data-tooltip-label="Orders" data-tooltip-message="{{order.order_description}}">({{ ask.orders.length }})</a>
-
-                          </td> 
-                      </tr>
-                  </tbody>
-                </table>
+            <div class='order-table-container'>
+              <h3>Closed Asks</h3>
+              <div class='page_buttons'>
+                <a class="pure-button pull-left" ng-click="prev_page('closed_sells')">Prev</a>
+                {{asks_current_page + 1}} / {{asks_max_page + 1}}
+                <a class="pure-button pull-right" ng-click="next_page('closed_sells')">Next</a>
               </div>
-            </div>      
-          </div>
+              <table class="pure-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>NZD Rate</th>                  
+                        <th>BTC Spent</th>
+                        <th>NZD Bought</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr ng-repeat="order in paged_closed_sells">
+                        <th>{{ order.date | date:'short' }}</th>
+                        <td>{{ order.price  | currency:'$' }}</td>
+                        <td>{{ order.volume | number:8 }}</td> 
+                        <td>{{ order.price * order.volume | currency:'$' }}</td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
         </div>
     </script>
 

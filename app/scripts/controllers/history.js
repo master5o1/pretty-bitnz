@@ -10,10 +10,10 @@ angular.module('prettyBitnzApp')
     $scope.closed_sells = [];
     $scope.paged_closed_buys = [];
     $scope.paged_closed_sells = [];
-    $scope.closed_buys_current_page = 0;
-    $scope.closed_buys_max_page = 1;
-    $scope.closed_sells_current_page = 0;
-    $scope.closed_sells_max_page = 1;
+    $scope.bids_current_page = 0;
+    $scope.bids_max_page = 0;
+    $scope.asks_current_page = 0;
+    $scope.asks_max_page = 0;
 
     var load = function(){
       $log.log('load history');
@@ -22,18 +22,16 @@ angular.module('prettyBitnzApp')
       }
       BitNZ.orders_buy_closed(0, 0).success(function(data){
         $log.log('load history buys');
-        $scope.closed_buys = process(data);
-        $scope.closed_buys_max_page = Math.round($scope.closed_buys.length / pageSize);
-        $scope.paged_closed_buys = page($scope.closed_buys, $scope.closed_buys_current_page, pageSize);
+        $scope.closed_buys = process(data);        
+        $scope.change_page('bids', 0);        
       }).error(function(data){
         $scope.Stop();
       });
 
       BitNZ.orders_sell_closed(0, 0).success(function(data){
         $log.log('load history sells');
-        $scope.closed_sells = process(data);
-        $scope.closed_sells_max_page = Math.round($scope.closed_sells.length / pageSize);
-        $scope.paged_closed_sells = page($scope.closed_sells, $scope.closed_buys_current_page, pageSize);
+        $scope.closed_sells = process(data);        
+        $scope.change_page('asks', 0);
       }).error(function(data){
         $scope.Stop();
       });
@@ -46,19 +44,13 @@ angular.module('prettyBitnzApp')
         var order = {
           price: data[i].price,
           volume: data[i].amount,
-          date: fromSeconds(data[i].date),
+          date_formatted: moment.unix(data[i].date).format("DD MMM h:mm a"),
           id: data[i].id
         };
         orders.push(order);
       }
       return orders;
-    };
-
-    var fromSeconds = function(seconds) {
-      var t = new Date(1970,0,1);
-      t.setSeconds(seconds);
-      return t;
-    };
+    };    
 
     var start = function() {
       load();
@@ -77,16 +69,45 @@ angular.module('prettyBitnzApp')
       start();
     };
 
-    var page = function(arr, page, size){
-      return arr.slice(0, size);
-    };
-
-    $scope.prev_page = function(type){
- 
-    };
     $scope.next_page = function(type){
- 
-    };
+      var current_page = (type === 'asks') ? $scope.asks_current_page : $scope.bids_current_page;
+      $scope.change_page(type, current_page + 1);
+    }
+
+    $scope.prev_page = function(type){        
+      var current_page = type === 'asks' ? $scope.asks_current_page : $scope.bids_current_page;
+      $scope.change_page(type, current_page - 1);     
+    }     
+
+    $scope.change_page = function(type, page){
+
+      var orders_to_filter = (type == 'asks') ? $scope.closed_sells : $scope.closed_buys;
+      var pagesize = 8;       
+      var max_page = Math.floor(orders_to_filter.length / pagesize);
+
+      var page_to_move_to = Math.max(page, 0);
+      page_to_move_to = Math.min(page_to_move_to, max_page);      
+
+      var current_page;
+      if (type == 'asks'){
+        current_page = $scope.asks_current_page;
+        $scope.asks_current_page = page_to_move_to;
+        $scope.asks_max_page = max_page;
+      } else {
+        current_page = $scope.bids_current_page;
+        $scope.bids_current_page = page_to_move_to;
+        $scope.bids_max_page = max_page;
+      }
+      
+      var start = page_to_move_to * pagesize;
+
+      if (type == 'asks'){
+        $scope.paged_closed_sells = orders_to_filter.slice(start, start + pagesize);
+      } else {
+        $scope.paged_closed_buys = orders_to_filter.slice(start, start + pagesize);
+      }
+
+    }
 
     $scope.Reload = reload;
     $scope.Start = start;
@@ -95,3 +116,4 @@ angular.module('prettyBitnzApp')
     start();
     PubSub.Subscribe('Authorized', reload);
   });
+

@@ -314,14 +314,15 @@
     <!-------- HISTORY -------->
 
     <script id="history.html" type="text/ng-template">      
-          <div class="content">
-            <div class="order-table-containers">
+        <div class="content">
+          <div class="pure-g">
+            <div class="pure-u-1-2 order-table-containers">            
               <div class='order-table-container'>
                 <h3>Closed Bids</h3>
                 <div class='page_buttons'>
-                  <a class="pure-button pull-left" ng-click="prev_page('closed_buys')">Prev</a>
-                    {{ closed_buys_current_page + 1}}/{{ closed_buys_max_page + 1}}
-                  <a class="pure-button pull-right" ng-click="next_page('closed_buys')">Next</a>
+                  <a class="pure-button pull-left" ng-click="prev_page('bids')">Prev</a>
+                    {{ bids_current_page + 1}}/{{ bids_max_page + 1}}
+                  <a class="pure-button pull-right" ng-click="next_page('bids')">Next</a>
                 </div>
                 <table class="pure-table">
                   <thead>
@@ -334,7 +335,7 @@
                   </thead>
                   <tbody>
                       <tr ng-repeat="order in paged_closed_buys">
-                          <th>{{ order.date | date:'short' }}</th>
+                          <th>{{ order.date_formatted }}</th>
                           <td>{{ order.price  | currency:'$' }}</td>
                           <td>{{ order.volume | number:8 }}</td> 
                           <td>{{ order.price * order.volume | currency:'$' }}</td>
@@ -343,32 +344,34 @@
                 </table>
               </div>
             </div>
-            <div class='order-table-container'>
-              <h3>Closed Asks</h3>
-              <div class='page_buttons'>
-                <a class="pure-button pull-left" ng-click="prev_page('closed_sells')">Prev</a>
-                {{asks_current_page + 1}} / {{asks_max_page + 1}}
-                <a class="pure-button pull-right" ng-click="next_page('closed_sells')">Next</a>
-              </div>
-              <table class="pure-table">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>NZD Rate</th>                  
-                        <th>BTC Spent</th>
-                        <th>NZD Bought</th>
-                    </tr>
-                </thead>
+            <div class="pure-u-1-2 order-table-containers"> 
+              <div class='order-table-container'>
+                <h3>Closed Asks</h3>
+                <div class='page_buttons'>
+                    <a class="pure-button pull-left" ng-click="prev_page('asks')">Prev</a>
+                      {{ asks_current_page + 1}}/{{ asks_max_page + 1}}
+                    <a class="pure-button pull-right" ng-click="next_page('asks')">Next</a>
+                  </div>
+                  <table class="pure-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>NZD Rate</th>                  
+                            <th>BTC Spent</th>
+                            <th>NZD Bought</th>
+                        </tr>
+                    </thead>
 
-                <tbody>
-                    <tr ng-repeat="order in paged_closed_sells">
-                        <th>{{ order.date | date:'short' }}</th>
-                        <td>{{ order.price  | currency:'$' }}</td>
-                        <td>{{ order.volume | number:8 }}</td> 
-                        <td>{{ order.price * order.volume | currency:'$' }}</td>
-                    </tr>
-                </tbody>
-              </table>
+                    <tbody>
+                        <tr ng-repeat="order in paged_closed_sells">
+                            <th>{{ order.date_formatted }}</th>
+                            <td>{{ order.price  | currency:'$' }}</td>
+                            <td>{{ order.volume | number:8 }}</td> 
+                            <td>{{ order.price * order.volume | currency:'$' }}</td>
+                        </tr>
+                    </tbody>
+                  </table>
+                </div>
             </div>
         </div>
     </script>

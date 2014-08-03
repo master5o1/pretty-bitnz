@@ -8,7 +8,7 @@
  * Controller of the prettyBitnzApp
  */
 angular.module('prettyBitnzApp')
-  .controller('MainCtrl', function ($scope, $rootScope, $log, BitNZ, BitNZAuth, Money, String_helper, KeyStore) {     
+  .controller('MainCtrl', function ($scope, $rootScope, $log, BitNZ, BitNZAuth, Money, String_helper, KeyStore, ngDialog) {     
 
       var t = this;
 
@@ -24,13 +24,15 @@ angular.module('prettyBitnzApp')
       $scope.active_tab = 'buy';
       $scope.new_order = {
         btc_rate : '',
-        btc_rate : '',
+        btc_amount : '',
+        is_buy : true
       }
 
       t.init = function(){
 
-        // check if we have some keys        
+        // check if we have some keys
         $scope.show_password_field = localStorage.getItem('api_keys') != null;        
+        console.log('pw', $scope.show_password_field);
 
         BitNZ.ticker().success(function(data, status){
             $scope.last_price = data.last;
@@ -154,6 +156,7 @@ angular.module('prettyBitnzApp')
 
       $scope.switch_tab = function(tab_name){
         $scope.active_tab = tab_name;
+        $scope.new_order.is_buy = (tab_name == 'buy')
       }
 
       $scope.use_last = function(){
@@ -179,6 +182,15 @@ angular.module('prettyBitnzApp')
             $scope.new_order.btc_amount = $rootScope.balance.btc_available;
           }
         }
+      }
+
+      $scope.create_order = function(){
+        var dialog = ngDialog.open({ 
+          template: 'confirm_order',
+          className: 'ngdialog-theme-flat',
+          controller : 'ConfirmBuyModalCtrl',
+          data : JSON.stringify($scope.new_order)
+        });
       }
 
       t.init();

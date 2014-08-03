@@ -77,8 +77,7 @@
 
     <!---- VIEWS -->
     <script id="main.html" type="text/ng-template">
-      <div class="content" ng-if="last_price">     
-
+      <div class="content" ng-if="last_price">
           <!--- Unauthorized stuff -->    
           <div ng-show="! authorized"> 
 
@@ -132,20 +131,20 @@
             <fieldset ng-show="active_tab == 'sell'">            
                 <div class="pure-control-group">
                     <label for="name">Sell BTC Amount</label>
-                    <input required ng-model="new_order.btc_amount" type="number" step="0.01" placeholder="Eg. 0.1">
+                    <input required ng-model="new_order.btc_amount" type="text" step="0.01" placeholder="Eg. 0.1">
                     <a class="pure-button button-small" ng-click="use_remaining()">Use Remaining BTC</a>                
                 </div>
 
                 <div class="pure-control-group">
                     <label for="name">At NZD Rate</label>
-                    <input required ng-model="new_order.btc_rate" type="number" step="0.1" placeholder="Eg. $683.23">
+                    <input required ng-model="new_order.btc_rate" type="text" step="0.1" placeholder="Eg. $683.23">
                     <a class="pure-button button-small" ng-click="use_last()">Last Price</a>
                     <a class="pure-button button-small" ng-click="use_ask()">Ask</a>
                     <a class="pure-button button-small" ng-click="use_bid()">Bid</a>
                 </div>            
                 <div>
                     <strong class='pull-left'>Total {{ new_order.btc_amount * new_order.btc_rate | currency:'$'}}</strong>              
-                    <button type="submit" class="pull-right pure-button pure-button-primary" ng-click="create_order()">Buy BTC</button>
+                    <button type="submit" class="pull-right pure-button pure-button-primary" ng-click="create_order()">Sell BTC</button>
                 </div>
             </fieldset>
             <hr />
@@ -341,6 +340,30 @@
       <div>
         About this project.
       </div>
+    </script>
+    <script type="text/ng-template" id="confirm_order">
+        <h3>Confirm your {{ ngDialogData.is_buy ? 'buy' : 'sell' }} order</h3>
+        <table style='width:100%'>
+          <tr>
+            <th>Amount</th>
+            <td>{{ ngDialogData.btc_amount | number:8 }}</td>
+          </tr>
+          <tr>
+            <th>Rate</th>
+            <td>${{ ngDialogData.btc_rate | number:2 }}</td>
+          </tr>          
+          <tr>
+            <th>Total</th>
+            <td>${{ ngDialogData.btc_amount * ngDialogData.btc_rate | number:2 }}</td>
+          </tr>          
+        </table>
+        <div class="ngdialog-buttons">                    
+          <button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="confirm()">
+            Confirm {{ ngDialogData.is_buy ? 'Buy' : 'Sell' }}
+          </button>
+          <button type="button" class="ngdialog-button action-btn" ng-click="closeThisDialog()">Cancel</button>
+        </div>
+        
     </script>
     
     <script src="scripts/min/scripts.min.js"></script>        

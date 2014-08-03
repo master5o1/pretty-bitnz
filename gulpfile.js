@@ -16,6 +16,7 @@ gulp.task('compile-js', function(){
 	    "bower_components/angular-touch/angular-touch.js",
 	    "bower_components/angular-route/angular-route.js",
 	    "bower_components/moment/moment.js",
+	    "bower_components/ngDialog/js/ngDialog.min.js",    
 	    "app/scripts/**/*.js",
 	    '!app/scripts/min/*.js', // Exclude all files in lib js folder
 	])

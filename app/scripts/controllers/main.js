@@ -93,13 +93,13 @@ angular.module('prettyBitnzApp')
               orders : [order],
               rate : rounded_rate,
               volume : order.amount,
-              order_description : String_helper.pad_string(20, '$' + order.rate, " ") +  'BTC ' + order.amount
+              order_description : String_helper.pad_string(15, '$' + order.rate, " ") +  'BTC ' + order.amount
             };
             
           } else {
             unique_prices[rounded_rate]['orders'].push(order);
             unique_prices[rounded_rate]['volume'] += order.amount;
-            unique_prices[rounded_rate]['order_description'] += '\n' + String_helper.pad_string(20, '$' + order.rate, " ") +  'BTC ' + order.amount;
+            unique_prices[rounded_rate]['order_description'] += '\n' + String_helper.pad_string(15, '$' + order.rate, " ") +  'BTC ' + order.amount;
           }
         };
 

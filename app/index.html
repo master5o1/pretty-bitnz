@@ -172,7 +172,7 @@
                   <tbody>
                       <tr ng-repeat="bid in paged_bids">
                           <td>
-                            <a ng-class="authorized ? 'pure-button' : ''" ng-click="new_order.btc_rate = bid.rate">{{bid.rate  | currency:'$'}}
+                            <a ng-class="authorized ? 'pure-button' : ''" ng-click="new_order.btc_rate = bid.rate">${{ bid.rate }}
                             </a>
                           </td>
                           <td>{{bid.volume | number:8 }}
@@ -206,7 +206,7 @@
                   <tbody>
                       <tr ng-repeat="ask in paged_asks">
                           <td>
-                            <a ng-class="authorized ? 'pure-button' : ''" ng-click="new_order.btc_rate = ask.rate">{{ask.rate  | currency:'$'}}
+                            <a ng-class="authorized ? 'pure-button' : ''" ng-click="new_order.btc_rate = ask.rate">${{ ask.rate }}
                             </a>
                           </td>
                           <td>{{ask.volume | number:8 }} 

@@ -149,9 +149,13 @@
             </fieldset>
             <hr />
           </form>
-
+          
+          <ul class="pure-paginator" ng-if="authorized">            
+            <li><a class="pure-button" ng-class="active_order_tab == 'order_book' ? 'pure-button-active button-secondary' : ''" ng-click="switch_order_tab('order_book')">Order Book</a></li>
+            <li><a class="pure-button"  ng-class="active_order_tab == 'open_orders' ? 'pure-button-active button-secondary' : ''" ng-click="switch_order_tab('open_orders')">Open Orders</a></li>            
+          </ul>
           <!-- Order Book -->
-          <div class="pure-g ">
+          <div class="pure-g" ng-if="active_order_tab == 'order_book'">
             <div class="pure-u-1-2 order-table-containers">
               <div class='order-table-container'>
                 <h3>Bids</h3>
@@ -165,7 +169,7 @@
                       <tr>
                           <th>NZD Rate</th>                  
                           <th>BTC Amount</th>
-                          <th>Value</div>
+                          <th>Value</th>
                       </tr>
                   </thead>
 
@@ -223,18 +227,94 @@
             </div>      
           </div>
 
+          <!--- Open Orders -->
+          <div class="pure-g" ng-if="active_order_tab == 'open_orders'">
+            <div class="pure-u-1-2 order-table-containers">
+              <div class='order-table-container'>
+                <h3>Open Buys</h3>
+                <table class="pure-table">
+                  <thead>
+                      <tr>
+                          <th>NZD Rate</th>                  
+                          <th>BTC Amount</th>
+                          <th>Value</th>
+                          <th>Date added</th>
+                          <th></th>
+
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr ng-repeat="bid in open_buy_orders">
+                          <td>
+                            {{bid.price  | currency:'$'}}                            
+                          </td>
+                          <td>
+                            {{bid.amount | number:8 }}
+                          </td>
+                          <td>
+                            {{ bid.amount * bid.price | currency:'$' }}
+                          </td>
+                          <td>
+                            {{bid.date_formatted }}
+                          </td>
+                          <td>
+                              <a class='pure-button button-xsmall' ng-click="cancel_order(bid, 'buy')">Cancel</a>
+                          </td>
+                      </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="pure-u-1-2 order-table-containers">
+              <div class='order-table-container'>
+                <h3>Open Sells</h3>
+                <table class="pure-table">
+                  <thead>
+                      <tr>
+                          <th>NZD Rate</th>                  
+                          <th>BTC Amount</th>
+                          <th>Value</th>
+                          <th>Date added</th>
+                          <th></th>
+
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr ng-repeat="bid in open_sell_orders">
+                          <td>
+                            {{bid.price  | currency:'$'}}                            
+                          </td>
+                          <td>
+                            {{bid.amount | number:8 }}
+                          </td>
+                          <td>
+                            {{ bid.amount * bid.price | currency:'$' }}
+                          </td>
+                           <td>
+                            {{bid.date_formatted }}
+                          </td>
+                          <td>
+                              <a class='pure-button button-xsmall' ng-click="cancel_order(bid, 'sell')">Cancel</a>
+                          </td>
+                      </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
         <p>
           <hr/>
         </p>
-        <p>
-          <img ng-src="{{ chart_url }}" style='width:800px;height:600px;' />
+        <p style='text-align:center'>
+          <img ng-src="{{ chart_url }}" style='width:800px;height:500px;margin:0 auto;' />
         </p>
       </div>
     </script>
 
     <!-------- HISTORY -------->
 
-    <script id="history.html" type="text/ng-template">      
+    <script id="history.html" type="text/ng-template">
+        <div class="content">
           <div class="pure-g ">
             <div class="pure-u-1-2 order-table-containers">
               <div class='order-table-container'>
@@ -291,11 +371,9 @@
                 </table>
               </div>
             </div>      
+          </div>
         </div>
     </script>
-
-
-
 
     <!-------- Settings -------->
     <script id="settings.html" type="text/ng-template">
@@ -343,7 +421,7 @@
     </script>
     <script type="text/ng-template" id="confirm_order">
         <h3>Confirm your {{ ngDialogData.is_buy ? 'buy' : 'sell' }} order</h3>
-        <table style='width:100%'>
+        <table class='pure-table' style='width:100%'>
           <tr>
             <th>Amount</th>
             <td>{{ ngDialogData.btc_amount | number:8 }}</td>
@@ -357,14 +435,30 @@
             <td>${{ ngDialogData.btc_amount * ngDialogData.btc_rate | number:2 }}</td>
           </tr>          
         </table>
-        <div class="ngdialog-buttons">                    
+        <div class="ngdialog-buttons">
           <button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="confirm()">
             Confirm {{ ngDialogData.is_buy ? 'Buy' : 'Sell' }}
           </button>
           <button type="button" class="ngdialog-button action-btn" ng-click="closeThisDialog()">Cancel</button>
         </div>
-        
     </script>
+    <script type="text/ng-template" id="confirm_cancel_order">
+        <p>Cancel this order?</p>
+        <table class='pure-table'>
+          <tr>
+            <th>Price</th>
+            <td>{{ngDialogData.price | currency:'$'}}</td>
+          </tr>
+          <tr>
+            <th>Amount</th>
+            <td>{{ngDialogData.amount}}</td>
+          </tr>
+        </table>
+        <div class="ngdialog-buttons">
+          <button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="confirm()">Confirm</button>
+          <button type="button" class="ngdialog-button action-btn" ng-click="closeThisDialog()">Cancel</button>
+        </div>
+    </script>    
     
     <script src="scripts/min/scripts.min.js"></script>        
 </body>

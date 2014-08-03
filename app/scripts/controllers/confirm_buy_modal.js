@@ -1,5 +1,5 @@
 angular.module('prettyBitnzApp')
-  .controller('ConfirmBuyModalCtrl', function ($scope, ngDialog, BitNZ) {    
+  .controller('ConfirmBuyModalCtrl', function ($scope, ngDialog, BitNZ, PubSub) {    
     'use strict'; 
 
     var controller = this;
@@ -25,7 +25,9 @@ angular.module('prettyBitnzApp')
         alert(data.message);
         return;
       }
-      $scope.closeThisDialog();
+
+      PubSub.Publish("update_orders");
+      $scope.closeThisDialog(); 
     };
 
     controller.error_callback = function(error){      

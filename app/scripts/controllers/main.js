@@ -8,9 +8,9 @@
  * Controller of the prettyBitnzApp
  */
 angular.module('prettyBitnzApp')
-  .controller('MainCtrl', function ($scope, $rootScope, $log, BitNZ, BitNZAuth, Money, String_helper, KeyStore, ngDialog) {     
+  .controller('MainCtrl', function ($scope, $rootScope, $log, BitNZ, BitNZAuth, Money, String_helper, KeyStore, ngDialog, PubSub) {     
 
-      var t = this;
+      var controller = this;
 
       $scope.bids_current_page = 0;
       $scope.asks_current_page = 0;
@@ -28,7 +28,9 @@ angular.module('prettyBitnzApp')
         is_buy : true
       }
 
-      t.init = function(){
+      $scope.active_order_tab = 'order_book';
+
+      controller.init = function(){
 
         // check if we have some keys
         $scope.show_password_field = localStorage.getItem('api_keys') != null;        
@@ -38,23 +40,50 @@ angular.module('prettyBitnzApp')
             $scope.last_price = data.last;
             $scope.ask_price = data.ask;
             $scope.bid_price = data.bid;
-        });
-
-        BitNZ.orderbook().success(function(data, status){
-          console.log('orders', data);
-          data.bids.sort(function(a, b){ return a[0] - b[0] });
-          data.asks.sort(function(a, b){ return b[0] - a[0] });
-          $scope.bids = t.group_orders(data.bids);
-          $scope.asks = t.group_orders(data.asks);
-
-          $scope.change_page('bids', 0);
-          $scope.change_page('asks', 0);
-        });
+        });       
 
         var a_week_ago = new moment().subtract('days', 14).format("X"); // unix timestamp
 
         $scope.chart_url = "https://bitnz.com/api/0/trades_chart?width=800&height=500&since_date=" + a_week_ago;
 
+        controller.get_order_book();
+
+        PubSub.Subscribe("update_orders", function(){
+          controller.get_order_book();
+          controller.get_open_orders();
+        });
+
+        PubSub.Subscribe("Authorized", function(){
+          controller.get_open_orders();
+        })
+
+      };
+
+      controller.get_order_book = function(){
+        BitNZ.orderbook().success(function(data, status){
+          console.log('orders', data);
+          data.bids.sort(function(a, b){ return a[0] - b[0] });
+          data.asks.sort(function(a, b){ return b[0] - a[0] });
+          $scope.bids = controller.group_orders(data.bids);
+          $scope.asks = controller.group_orders(data.asks);
+
+          $scope.change_page('bids', 0);
+          $scope.change_page('asks', 0);
+        });
+      }
+
+      controller.get_open_orders = function(){
+        BitNZ.orders_buy_open().success(function(data, status){
+          for (var i = data.length - 1; i >= 0; i--) {            
+            data[i].date_formatted = new moment.unix(data[i].date).format("DD/MM h:mm a");
+          };
+          console.log(data);
+          $scope.open_buy_orders = data;
+        });
+
+        BitNZ.orders_sell_open().success(function(data, status){
+          $scope.open_sell_orders = data;
+        });
       };
 
       $scope.unlock = function(){
@@ -78,7 +107,7 @@ angular.module('prettyBitnzApp')
         }
       }
 
-      t.group_orders = function(orders){        
+      controller.group_orders = function(orders){        
         var unique_prices = {};
 
         for (var i = orders.length - 1; i >= 0; i--){
@@ -159,6 +188,10 @@ angular.module('prettyBitnzApp')
         $scope.new_order.is_buy = (tab_name == 'buy')
       }
 
+      $scope.switch_order_tab = function(tab_name){
+        $scope.active_order_tab = tab_name;
+      }
+
       $scope.use_last = function(){
         $scope.new_order.btc_rate = $scope.last_price;
       }
@@ -193,5 +226,31 @@ angular.module('prettyBitnzApp')
         });
       }
 
-      t.init();
+      $scope.cancel_order = function(order, order_type){
+
+        order.order_type = order_type;
+
+        var dialog = ngDialog.openConfirm({
+          template: 'confirm_cancel_order',
+          className: 'ngdialog-theme-flat',
+          data : JSON.stringify(order)
+        }).then(function(data){          
+          controller.actually_cancel_order(order, order_type);
+        });        
+      };
+
+      controller.actually_cancel_order = function(order, order_type){
+        console.log("Cancel Order: ", order);
+        if (order_type == 'buy'){
+          BitNZ.orders_buy_cancel(order.id).success(function(){
+            PubSub.Publish('update_orders');
+          });
+        } else {
+          BitNZ.orders_sell_cancel(order.id).success(function(){
+            PubSub.Publish('update_orders');
+          });
+        }    
+      }
+
+      controller.init();
   });

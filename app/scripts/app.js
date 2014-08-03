@@ -15,7 +15,8 @@ angular
     'ngRoute',
     'ngSanitize',
     'ngTouch',
-    'ngDialog'
+    'ngDialog',
+    'angularMoment'
   ])
   .config(function ($routeProvider) {
     $routeProvider

@@ -1,5 +1,5 @@
 angular.module('prettyBitnzApp')
-  .controller('ConfirmBuyModalCtrl', function ($scope, ngDialog, BitNZ, PubSub) {    
+  .controller('ConfirmBuyModalCtrl', function ($scope, ngDialog, BitNZ, PubSub, notify) {    
     'use strict'; 
 
     var controller = this;
@@ -25,13 +25,14 @@ angular.module('prettyBitnzApp')
         alert(data.message);
         return;
       }
-
+      notify('Order created for ' + data.amount + ' at NZD$' + data.price);
       PubSub.Publish("update_orders");
       $scope.closeThisDialog(); 
     };
 
     controller.error_callback = function(error){      
       console.log("Error making order", error);
+      notify('Could not make order: ' + error);
     };
 
     controller.perform_buy = function(order){

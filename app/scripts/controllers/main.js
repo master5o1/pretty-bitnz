@@ -8,7 +8,7 @@
  * Controller of the prettyBitnzApp
  */
 angular.module('prettyBitnzApp')
-  .controller('MainCtrl', function ($scope, $rootScope, $log, BitNZ, BitNZAuth, Money, String_helper, KeyStore, ngDialog, PubSub) {     
+  .controller('MainCtrl', function ($scope, $rootScope, $log, BitNZ, BitNZAuth, Money, String_helper, KeyStore, ngDialog, PubSub, notify) {     
 
       var controller = this;
 
@@ -75,7 +75,7 @@ angular.module('prettyBitnzApp')
       controller.get_open_orders = function(){
         BitNZ.orders_buy_open().success(function(data, status){
           for (var i = data.length - 1; i >= 0; i--) {            
-            data[i].date_formatted = new moment.unix(data[i].date).format("DD/MM h:mm a");
+            data[i].date_formatted = new moment.unix(data[i].date).format("DD MMM h:mm a");
           };
           console.log(data);
           $scope.open_buy_orders = data;
@@ -244,10 +244,12 @@ angular.module('prettyBitnzApp')
         if (order_type == 'buy'){
           BitNZ.orders_buy_cancel(order.id).success(function(){
             PubSub.Publish('update_orders');
+            notify('Order Cancelled');
           });
         } else {
           BitNZ.orders_sell_cancel(order.id).success(function(){
             PubSub.Publish('update_orders');
+            notify('Order Cancelled');
           });
         }    
       }

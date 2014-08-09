@@ -17,6 +17,7 @@ angular.module('prettyBitnzApp')
         $rootScope.ticker = data;
         $scope.ticker = data;
         $rootScope.current_nzd_price = data.last;
+        $rootScope.current_nzd_price_formatted = Money.format(data.last);
       }).error(function(data){
         controller.failed_loads++;
         $log.error('ticker', data);

@@ -12,15 +12,14 @@ angular.module('prettyBitnzApp')
 
       var controller = this;
 
+      $rootScope.page.title = 'Trade';
+
       $scope.bids_current_page = 0;
       $scope.asks_current_page = 0;
       $scope.bids_max_page = 1;
       $scope.asks_max_page = 1;
       $scope.bids = [];
       $scope.asks = [];
-      $scope.last_price = "Loading...";
-      $scope.ask_price = "Loading...";
-      $scope.bid_price = "Loading...";
       $scope.active_tab = 'buy';
       $scope.new_order = {
         btc_rate : '',
@@ -35,12 +34,6 @@ angular.module('prettyBitnzApp')
         // check if we have some keys
         $scope.show_password_field = localStorage.getItem('api_keys') != null;        
         console.log('pw', $scope.show_password_field);
-
-        BitNZ.ticker().success(function(data, status){
-            $scope.last_price = data.last;
-            $scope.ask_price = data.ask;
-            $scope.bid_price = data.bid;
-        });       
 
         var a_week_ago = new moment().subtract('days', 14).format("X"); // unix timestamp
 
@@ -193,21 +186,21 @@ angular.module('prettyBitnzApp')
       }
 
       $scope.use_last = function(){
-        $scope.new_order.btc_rate = $scope.last_price;
+        $scope.new_order.btc_rate = $rootScope.ticker.last;
       }
 
       $scope.use_bid = function(){
-        $scope.new_order.btc_rate = $scope.bid_price;
+        $scope.new_order.btc_rate = $rootScope.ticker.bid;
       }
 
       $scope.use_ask = function(){
-        $scope.new_order.btc_rate = $scope.ask_price;
+        $scope.new_order.btc_rate = $rootScope.ticker.ask;
       }
 
       $scope.use_remaining = function(){
         if (typeof $rootScope.balance !== 'undefined') {
           if ($scope.active_tab === 'buy' && $rootScope.balance.hasOwnProperty('nzd_available')) {
-            $scope.new_order.btc_rate = $scope.new_order.btc_rate || $scope.ask_price
+            $scope.new_order.btc_rate = $scope.new_order.btc_rate || $rootScope.ticker.ask
             $scope.new_order.btc_amount = $rootScope.balance.nzd_available / $scope.new_order.btc_rate;
           }
           if ($scope.active_tab === 'sell' && $rootScope.balance.hasOwnProperty('btc_available')) {

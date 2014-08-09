@@ -1,15 +1,15 @@
 <!doctype html>
-<html class="no-js">
+<html class="no-js" ng-app="prettyBitnzApp">
   <head>
-    <meta charset="utf-8">
-    <title>Pretty BitNZ</title>
+    <meta charset="utf-8"> 
+    <title data-ng-bind-html="ticker.last ?  ticker.last + ' | ' + page.title : page.title + ' | Pretty BitNZ'">Pretty BitNZ</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">    
     <link rel="stylesheet" href="styles/styles.css">        
     <!-- endbuild -->
     <script src="scripts/min/scripts.min.js"></script>  
   </head>  
-    <body ng-app="prettyBitnzApp">
+    <body>
 
     <div id="layout" ng-controller="MasterCtrl" ng-class=" side_bar_toggled ? 'active' : ''">      
       <!-- Menu toggle -->
@@ -58,7 +58,7 @@
           </div>
       </div>
 
-      <div id="ticker" ng-controller="TickerCtrl" ng-init="Start()" ng-click="Reload()">
+      <div id="ticker" ng-controller="TickerCtrl" ng-init="start()" ng-click="reload()">
         <span>Last Price: <strong>{{ ticker.last | currency:'$' }}</strong></span>
         <span>Today's Low: <strong>{{ ticker.low | currency:'$' }}</strong></span>
         <span>Today's High: <strong>{{ ticker.high | currency:'$' }}</strong></span>
@@ -78,7 +78,7 @@
 
     <!---- VIEWS -->
     <script id="main.html" type="text/ng-template">
-      <div class="content" ng-if="last_price">
+      <div class="content" ng-if="ticker.last">
           <!--- Unauthorized stuff -->    
           <div ng-show="! authorized"> 
 

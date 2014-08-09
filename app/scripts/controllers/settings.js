@@ -3,6 +3,8 @@
 angular.module('prettyBitnzApp')
   .controller('SettingsCtrl', function($scope, $rootScope, $log, BitNZAuth, PubSub, KeyStore){
     
+    $rootScope.page.title = 'Settings';
+
     $scope.authError = false;
     $scope.errorMessage = '';
 

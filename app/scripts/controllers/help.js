@@ -1,6 +1,6 @@
 'use strict';
 
 angular.module('prettyBitnzApp')
-  .controller('HelpCtrl', ['$scope', '$log', 'BitNZ', function($scope, $log, bitnz){
-
-  }]);
+  .controller('HelpCtrl', function($scope, $rootScope, $log){
+  	$rootScope.page.title = 'Help';
+  });

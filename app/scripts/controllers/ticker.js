@@ -1,41 +1,48 @@
 'use strict';
 
 angular.module('prettyBitnzApp')
-  .controller('TickerCtrl', ['$scope', '$rootScope', '$interval', '$log', 'BitNZ', function($scope, $rootScope, $interval, $log, bitnz){
-    $scope.ticker = {};
+  .controller('TickerCtrl', ['$scope', '$rootScope', '$interval', '$log', 'Money', 'BitNZ', function($scope, $rootScope, $interval, $log, Money, bitnz){
+    $scope.ticker = {};    
+
+    var controller = this;
    
     var interval = null;
+    controller.failed_loads = 0;
    
-    var load = function(){
+    controller.load = function(){
       $log.info('run');
       bitnz.ticker().success(function(data){
+        controller.failed_loads = 0;
         $log.log('ticker', data);
+        $rootScope.ticker = data;
         $scope.ticker = data;
         $rootScope.current_nzd_price = data.last;
       }).error(function(data){
+        controller.failed_loads++;
         $log.error('ticker', data);
-        $scope.Stop();
+
+        if (controller.failed_loads > 20){
+          controller.stop();
+        } else {
+          controller.load();
+        }
       });
     };
 
-    var start = function() {
-      load();
-      interval = $interval(load, 60 * 1000);
+    $scope.start = function(){
+      controller.load();
+      interval = $interval(controller.load, 60 * 1000);
     };
 
-    var stop = function() {
+    controller.stop = function() {
       if (angular.isDefined(interval)) {
         $interval.cancel(interval);
         interval = undefined;
       }
     };
 
-    var reload = function() {
-      stop();
-      start();
+    $scope.reload = function() {
+      controller.stop();
+      $scope.start();
     };
-
-    $scope.Reload = reload;
-    $scope.Start = start;
-    $scope.Stop = stop;
   }]);

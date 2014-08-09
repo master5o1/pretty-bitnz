@@ -1,8 +1,10 @@
 'use strict';
 
 angular.module('prettyBitnzApp')
-  .controller('HistoryCtrl', function($scope, $rootScope, $interval, $log, BitNZ, PubSub, notify){
-    
+  .controller('HistoryCtrl', function($scope, $rootScope, $interval, $log, BitNZ, PubSub, notify){    
+
+    $rootScope.page.title = 'History';
+
     var interval = null;
     var pageSize = 10;
 

@@ -47,4 +47,8 @@ angular
       .otherwise({
         redirectTo: '/'
       });
-  });
+  }).run(['$rootScope', function($rootScope){
+    $rootScope.page = {
+        title : 'Pretty BitNZ'
+    }
+}]);

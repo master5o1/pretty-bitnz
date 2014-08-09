@@ -19,32 +19,32 @@ gulp.task('compile-js', function(){
 	    "bower_components/angular-notify/angular-notify.js",
 	    "bower_components/ngDialog/js/ngDialog.min.js",    
 
-	    "app/scripts/**/*.js",
-	    '!app/scripts/min/*.js', // Exclude all files in lib js folder
+	    "scripts/**/*.js",
+	    '!scripts/min/*.js', // Exclude all files in lib js folder
 	])
 	.pipe(concatter("scripts.min.js"))
 	// .pipe(ngmin())	
 	// .pipe(uglify({ mangle : false}))
-	.pipe(gulp.dest('app/scripts/min'))
+	.pipe(gulp.dest('scripts/min'))
 });
 
 gulp.task('compile-less', function(){
-	gulp.src(['bower_components/pure/pure-min.css', 'app/styles/styles.less'])
+	gulp.src(['bower_components/pure/pure-min.css', 'styles/styles.less'])
 	.pipe(sourcemaps.init())
 	.pipe(less())
   	.pipe(sourcemaps.write())
-  	.pipe(gulp.dest('app/styles'));
+  	.pipe(gulp.dest('styles'));
 });
 
 gulp.task('watch-scripts', function() {
-	gulp.src('app/**/*.js', { read: false })
+	gulp.src('**/*.js', { read: false })
 	.pipe(watch({ emit: 'all' }, function(files) {
 		gulp.run('compile-js');
 	}));
 });
 
 gulp.task('watch-less', function() {
-	gulp.src(['bower_components/pure/pure-min.css', 'app/styles/*.less'], { read: false })
+	gulp.src(['bower_components/pure/pure-min.css', 'styles/*.less'], { read: false })
 	.pipe(watch({ emit: 'all' }, function(files) {
 		gulp.run('compile-less')
 	}))

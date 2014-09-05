@@ -53,7 +53,7 @@ angular.module('prettyBitnzApp')
       };
 
       controller.get_order_book = function(){
-        BitNZ.orderbook().success(function(data, status){
+        BitNZ.orderbook(0).success(function(data, status){
           console.log('orders', data);
           data.bids.sort(function(a, b){ return a[0] - b[0] });
           data.asks.sort(function(a, b){ return b[0] - a[0] });

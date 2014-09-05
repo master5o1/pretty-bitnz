@@ -129,11 +129,11 @@
                     </div>
                     <div>
                       <br />
-                      <em class='pull-left'>{{ balance.fee}} Trade Commission: {{ calculate_fee(new_order) | number:'8' }}</em>
+                      <em class='pull-left'>{{ balance.fee}} Trade Commission: {{ calculate_fee(new_order) | number:'8' }} BTC</em>
                     </div>
                     <div>
                       <br />
-                      <em class='pull-left'>Total (less fee): {{ (new_order.btc_amount - calculate_fee(new_order)) | number:'8' }}</em>
+                      <em class='pull-left'>Total (less fee): {{ (new_order.btc_amount - calculate_fee(new_order)) | number:'8' }} BTC</em>
                     </div>
                     <button type="submit" class="pull-right pure-button pure-button-primary" ng-click="create_order()">Buy BTC</button>
                 </div>

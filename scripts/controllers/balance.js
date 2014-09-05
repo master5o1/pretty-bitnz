@@ -5,21 +5,25 @@ angular.module('prettyBitnzApp')
     var interval = null;
     
     $rootScope.balance = {};
+    $rootScope.haveBalance = false;
     $scope.haveBalance = false;
       
     var load = function(){
       BitNZ.balance().success(function(data){
         $scope.haveBalance = true;
+        $rootScope.haveBalance = true;
         if (!data.hasOwnProperty('result')) {
           $log.log('balance', data);
           $rootScope.balance = data;
           $scope.haveBalance = true;
+          $rootScope.haveBalance = true;
         } else {
           stop();
         }
       }).error(function(data){
         stop();
         $scope.haveBalance = false;
+        $rootScope.haveBalance = false;
       });
     };
    

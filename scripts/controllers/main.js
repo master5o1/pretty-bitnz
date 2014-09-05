@@ -210,6 +210,34 @@ angular.module('prettyBitnzApp')
         }
       }
 
+      $scope.calculate_fee = function(order) {
+        var fee = 0;
+        var rate = 0;
+        var amount = order.btc_amount;
+        if (!$rootScope.haveBalance || typeof $rootScope.balance.fee === 'undefined') {
+          return;
+        }
+        if (!order.is_buy) {
+          amount = order.btc_amount * order.btc_rate;
+        }
+        rate = $rootScope.balance.fee.replace('%', '');
+        fee = rate * 0.01 * amount;
+        return fee;
+      };
+
+      $scope.match_bid = function(bid) {
+        $scope.switch_tab('sell');
+        $scope.new_order.btc_rate = bid.rate;
+        //$scope.new_order.btc_amount = bid.volume;
+
+      }
+
+      $scope.match_ask = function(ask) {
+        $scope.switch_tab('buy');
+        $scope.new_order.btc_rate = ask.rate;
+        //$scope.new_order.btc_amount = ask.volume;
+      }
+
       $scope.create_order = function(){
         var dialog = ngDialog.open({ 
           template: 'confirm_order',

@@ -124,7 +124,17 @@
                     <a class="pure-button button-small" ng-click="use_bid()">Bid</a>
                 </div>            
                 <div>
-                  <strong class='pull-left'>Total {{ new_order.btc_amount * new_order.btc_rate | currency:'$'}}</strong>              
+                    <div>
+                      <strong class='pull-left'>Total: {{ new_order.btc_amount * new_order.btc_rate | currency:'$'}}</strong>
+                    </div>
+                    <div>
+                      <br />
+                      <em class='pull-left'>{{ balance.fee}} Trade Commission: {{ calculate_fee(new_order) | number:'8' }}</em>
+                    </div>
+                    <div>
+                      <br />
+                      <em class='pull-left'>Total (less fee): {{ (new_order.btc_amount - calculate_fee(new_order)) | number:'8' }}</em>
+                    </div>
                     <button type="submit" class="pull-right pure-button pure-button-primary" ng-click="create_order()">Buy BTC</button>
                 </div>
             </fieldset>
@@ -144,7 +154,17 @@
                     <a class="pure-button button-small" ng-click="use_bid()">Bid</a>
                 </div>            
                 <div>
-                    <strong class='pull-left'>Total {{ new_order.btc_amount * new_order.btc_rate | currency:'$'}}</strong>              
+                    <div>
+                      <strong class='pull-left'>Total: {{ new_order.btc_amount * new_order.btc_rate | currency:'$'}}</strong>
+                    </div>
+                    <div>
+                      <br />
+                      <em class='pull-left'>{{ balance.fee}} Trade Commission: {{ calculate_fee(new_order) | currency:'$' }}</em>
+                    </div>
+                    <div>
+                      <br />
+                      <em class='pull-left'>Total (less fee): {{ (new_order.btc_amount * new_order.btc_rate - calculate_fee(new_order)) | currency:'$' }}</em>
+                    </div>
                     <button type="submit" class="pull-right pure-button pure-button-primary" ng-click="create_order()">Sell BTC</button>
                 </div>
             </fieldset>
@@ -177,7 +197,7 @@
                   <tbody>
                       <tr ng-repeat="bid in paged_bids">
                           <td>
-                            <a ng-class="authorized ? 'pure-button' : ''" ng-click="new_order.btc_rate = bid.rate">${{ bid.rate }}
+                            <a ng-class="authorized ? 'pure-button' : ''" ng-click="match_bid(bid)">${{ bid.rate }}
                             </a>
                           </td>
                           <td>{{bid.volume | number:8 }}
@@ -211,7 +231,7 @@
                   <tbody>
                       <tr ng-repeat="ask in paged_asks">
                           <td>
-                            <a ng-class="authorized ? 'pure-button' : ''" ng-click="new_order.btc_rate = ask.rate">${{ ask.rate }}
+                            <a ng-class="authorized ? 'pure-button' : ''" ng-click="match_ask(ask)">${{ ask.rate }}
                             </a>
                           </td>
                           <td>{{ask.volume | number:8 }} 

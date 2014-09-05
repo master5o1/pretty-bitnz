@@ -93,8 +93,10 @@ angular.module('prettyBitnzApp').factory('BitNZ', ['$http', '$log', function ($h
     });
   };
 
-  api.orderbook = function() {
-    return get('/orderbook', {});
+  api.orderbook = function(group) {
+    return get('/orderbook', {
+      group: group || 1
+    });
   };
 
   // Private API Calls:
